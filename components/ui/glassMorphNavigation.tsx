@@ -1,6 +1,7 @@
 "use client";
 
-import { LayoutGrid, Menu, Search } from "lucide-react";
+import { auth } from "@/auth";
+import { Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -52,6 +53,9 @@ export default function GlassmorphNavbar() {
 
         <div className="hidden md:block">
           <div className="flex items-center gap-2">
+            <Button className="hover:text-primary-foreground">
+              <Link href="/github-login">Profile</Link>
+            </Button>
             <ModeToggle />
             <SearchDropDown />
             <AppsDropDown />

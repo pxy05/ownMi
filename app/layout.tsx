@@ -34,9 +34,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <GlassmorphNavbar />
           {children}
-          <Footer />
         </ThemeProvider>
       </body>
     </html>
