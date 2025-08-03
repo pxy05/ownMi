@@ -56,12 +56,14 @@
 ### Frontend
 
 - **Framework:** Next.js with TypeScript
-- **UI:** Tailwind CSS (planned), Origin UI (in use)
+- **UI:** Tailwind CSS, shadcn
 
 ### Backend
 
+- **TLS:** Caddy (Reverse Proxy)
 - **Server:** Go (planned)
 - **Database:** PostgreSQL (planned)
+- **Microservices & General Organization:** Docker
 - **Auth & Privacy:** Auth.js with opt-in leaderboard visibility
 
 ### External Services (Planned)
