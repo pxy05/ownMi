@@ -60,9 +60,9 @@
 
 ### Backend
 
-- **Server:** Express.js (planned)
+- **Server:** Go (planned)
 - **Database:** PostgreSQL (planned)
-- **Auth & Privacy:** Custom auth with opt-in leaderboard visibility
+- **Auth & Privacy:** Auth.js with opt-in leaderboard visibility
 
 ### External Services (Planned)
 
@@ -86,18 +86,10 @@ Currently building the MVP:
 - [x] Focus timer (manual + stopwatch)
 - [ ] Earnings engine based on job/location
 - [ ] Leaderboards (focus + earnings)
-- [ ] Express API and Postgres integration
-
----
-
-## 📬 Contact / Contribute
-
-Want to help shape this project?  
-Open an issue or fork the repo.  
-Reach out: [your-email@example.com]
+- [ ] Go API and Postgres integration
 
 ---
 
 ## 📜 License
 
-MIT License.
+Apache-2.0 License.
