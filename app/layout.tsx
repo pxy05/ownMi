@@ -1,17 +1,10 @@
 import type { Metadata } from "next";
 import { Libre_Franklin, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import GlassmorphNavbar from "@/components/ui/glassMorphNavigation";
-import Footer from "@/components/ui/footer";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const libreFranklin = Libre_Franklin({
   variable: "--font-libre-franklin",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 

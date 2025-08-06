@@ -27,6 +27,11 @@ export const navigationItems = [
     href: "/leaderboard ",
     items: [],
   },
+  {
+    title: "Auth Test",
+    href: "/auth-test",
+    items: [],
+  },
 ];
 
 export default function GlassmorphNavbar() {
@@ -58,7 +63,7 @@ export default function GlassmorphNavbar() {
         <div className="hidden md:block">
           <div className="flex items-center gap-2">
             <Button className="hover:text-primary-foreground bg-transparent">
-              <Link href="/github-login" className="glow">Profile</Link>
+              <Link href="/login" className="glow">Profile</Link>
             </Button>
             <ModeToggle />
             <SearchDropDown />
