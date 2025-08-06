@@ -1,6 +1,5 @@
 "use client";
 
-import { auth } from "@/auth";
 import { Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,6 +22,11 @@ export const navigationItems = [
     href: "/finances",
     items: [],
   },
+  {
+    title: "Leaderboard",
+    href: "/leaderboard ",
+    items: [],
+  },
 ];
 
 export default function GlassmorphNavbar() {
@@ -35,7 +39,7 @@ export default function GlassmorphNavbar() {
           <Link href="/">
             <Image
               src="/work-study-icon.svg"
-              className="dark:invert w-10 pr-2"
+              className="w-10 pr-2 dark:invert [filter:drop-shadow(0_0_6px_theme(colors.primary.DEFAULT))] dark:[filter:invert(1)_drop-shadow(0_0_6px_theme(colors.primary.DEFAULT))]"
               alt="work-study-sim logo"
               width={50}
               height={50}
@@ -44,7 +48,7 @@ export default function GlassmorphNavbar() {
 
           <div className="hidden gap-4 md:flex">
             {navigationItems.map((item) => (
-              <Link key={item.href} href={item.href}>
+              <Link key={item.href} href={item.href} className="glow">
                 {item.title}
               </Link>
             ))}
@@ -53,8 +57,8 @@ export default function GlassmorphNavbar() {
 
         <div className="hidden md:block">
           <div className="flex items-center gap-2">
-            <Button className="hover:text-primary-foreground">
-              <Link href="/github-login">Profile</Link>
+            <Button className="hover:text-primary-foreground bg-transparent">
+              <Link href="/github-login" className="glow">Profile</Link>
             </Button>
             <ModeToggle />
             <SearchDropDown />
@@ -64,7 +68,7 @@ export default function GlassmorphNavbar() {
 
         <div className="md:hidden">
           <Button onClick={() => setIsOpen(!isOpen)}>
-            <Menu className="size-4" />
+            <Menu className="size-4 glow" />
           </Button>
         </div>
       </div>
@@ -76,6 +80,7 @@ export default function GlassmorphNavbar() {
               key={item.href}
               href={item.href}
               onClick={() => setIsOpen(false)}
+              className="glow"
             >
               {item.title}
             </Link>

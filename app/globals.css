@@ -113,6 +113,32 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+  .glow {
+  color: var(--primary, #0fa);
+  text-shadow:
+      0 0 7px var(--primary, #0fa),
+      0 0 10px var(--primary, #0fa),
+      0 0 21px var(--primary, #0fa),
+      0 0 42px var(--primary, #0fa),
+      0 0 82px var(--primary, #0fa),
+      0 0 92px var(--primary, #0fa),
+      0 0 102px var(--primary, #0fa),
+      0 0 151px var(--primary, #0fa);
+}
+
+.dark .glow {
+  color: #fff !important;
+  text-shadow:
+      0 0 7px #fff,
+      0 0 10px #fff,
+      0 0 21px #fff,
+      0 0 42px var(--primary, #0fa),
+      0 0 82px var(--primary, #0fa),
+      0 0 92px var(--primary, #0fa),
+      0 0 102px var(--primary, #0fa),
+      0 0 151px var(--primary, #0fa);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

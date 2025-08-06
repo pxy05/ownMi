@@ -19,7 +19,7 @@ const SearchDropDown = () => {
           className="rounded-full transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Search"
         >
-          <Search className="size-5 text-muted-foreground" />
+          <Search className="size-5 text-muted-foreground glow" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">

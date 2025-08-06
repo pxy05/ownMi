@@ -21,7 +21,7 @@ const AppsDropDown = () => {
           className="rounded-full transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Apps"
         >
-          <LayoutGrid className="size-5 text-muted-foreground" />
+          <LayoutGrid className="size-5 text-muted-foreground glow" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
