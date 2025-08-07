@@ -10,6 +10,7 @@ import { Button } from "./button";
 
 import SearchDropDown from "../ui-support/SearchDropDown";
 import AppsDropDown from "../ui-support/AppsDropDown";
+import { useAppUser } from "@/lib/app-user-context";
 
 export const navigationItems = [
   {
@@ -24,22 +25,7 @@ export const navigationItems = [
   },
   {
     title: "Leaderboard",
-    href: "/leaderboard ",
-    items: [],
-  },
-  {
-    title: "Auth Test",
-    href: "/auth-test",
-    items: [],
-  },
-  {
-    title: "Login",
-    href: "/auth/login",
-    items: [],
-  },
-  {
-    title: "Sign Up",
-    href: "/auth/signup",
+    href: "/leaderboard",
     items: [],
   },
 ];
@@ -47,6 +33,9 @@ export const navigationItems = [
 export default function GlassmorphNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, signOut } = useAuth();
+  const { appUser } = useAppUser();
+
+  console.log(appUser?.username);
 
   const navClassName = `fixed left-1/2 top-0 z-50 mt-7 flex w-11/12 max-w-8xl -translate-x-1/2 flex-col items-center bg-background/20 p-3 backdrop-blur-lg ${
     isOpen ? "rounded-md" : "rounded-full"
@@ -64,7 +53,8 @@ export default function GlassmorphNavbar() {
     <nav
       className={navClassName}
       style={{
-        transition: "background-color 0.3s ease-in-out, backdrop-filter 0.3s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out",
+        transition:
+          "background-color 0.3s ease-in-out, backdrop-filter 0.3s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out",
       }}
     >
       <div className="flex w-full items-center justify-between">
@@ -93,7 +83,7 @@ export default function GlassmorphNavbar() {
             {user ? (
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">
-                  Welcome, {user.email}
+                  Welcome, {appUser ? appUser?.username : user.email}
                 </span>
                 <Button
                   onClick={handleSignOut}
@@ -139,7 +129,7 @@ export default function GlassmorphNavbar() {
           {user && (
             <div className="flex flex-col items-center gap-2 w-full">
               <span className="text-sm text-muted-foreground">
-                Welcome, {user.email}
+                Welcome, {appUser != null ? appUser?.username : user.email}
               </span>
               <Button
                 onClick={handleSignOut}
