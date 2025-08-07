@@ -139,19 +139,30 @@
       0 0 151px var(--primary, #0fa);
 } */
 
+/*
+#18230F
+#27391C
+#255F38
+#1F7D53
+*/
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
-    /* Prevent layout shift when scrollbar appears/disappears */
-    scrollbar-gutter: stable;
   }
   
-  /* Ensure dropdowns don't cause horizontal overflow */
-  [data-radix-popper-content-wrapper] {
-    max-width: calc(100vw - 2rem) !important;
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+  html {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
   }
 }
 

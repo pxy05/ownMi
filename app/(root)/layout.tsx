@@ -1,11 +1,13 @@
 import Footer from "@/components/ui/footer";
 import GlassmorphNavbar from "@/components/ui/glassMorphNavigation";
+import FaviconFunctions from "@/components/ui-support/favicon-functions";
 
 export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <>
+      <FaviconFunctions />
       <div className="min-h-screen bg-gradient-to-br from-background to-muted font-sans">
         <main className="pt-30 sm:pt-40 p-8 pb-20 sm:p-20">
           <GlassmorphNavbar />

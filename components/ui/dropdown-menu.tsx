@@ -47,6 +47,7 @@ function DropdownMenuContent({
         )}
         style={{
           maxWidth: 'calc(100vw - 2rem)',
+          width: 'max-content',
         }}
         {...props}
       />

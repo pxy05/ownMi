@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Libre_Franklin, Geist_Mono } from "next/font/google";
+import { Libre_Franklin } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/lib/auth-context";
+import { AppUserProvider } from "@/lib/app-user-context";
 
 const libreFranklin = Libre_Franklin({
   variable: "--font-libre-franklin",
@@ -29,7 +30,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            {children}
+            <AppUserProvider>{children}</AppUserProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>
