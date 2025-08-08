@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -24,9 +25,11 @@ export default function Footer() {
                 window.open("https://github.com/pxy05/work-study-sim", "_blank")
               }
             >
-              <img
+              <Image
                 src="/github-mark-white.svg"
-                alt=""
+                alt="GitHub"
+                width={20}
+                height={20}
                 className="h-4 w-4 flex-1 relative dark:invert"
               />
               <p className="flex-1">GitHub</p>

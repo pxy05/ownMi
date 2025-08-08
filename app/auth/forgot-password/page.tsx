@@ -1,55 +1,66 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Mail, Loader2, ArrowLeft } from 'lucide-react'
-import Link from 'next/link'
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Mail, Loader2, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
-  const supabase = createClient()
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const supabase = createClient();
 
   const handleResetPassword = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-    setSuccess(null)
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/reset-password`
-      })
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
 
       if (error) {
-        setError('Failed to send reset email. Please try again.')
-        console.error('Reset password error:', error)
+        setError("Failed to send reset email. Please try again.");
+        console.error("Reset password error:", error);
       } else {
-        setSuccess('Password reset email sent! Please check your email for instructions.')
-        setEmail('')
+        setSuccess(
+          "Password reset email sent! Please check your email for instructions."
+        );
+        setEmail("");
       }
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.')
-      console.error('Unexpected error:', err)
+      setError("An unexpected error occurred. Please try again.");
+      console.error("Unexpected error:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Reset Password</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">
+            Reset Password
+          </CardTitle>
           <CardDescription className="text-center">
-            Enter your email address and we'll send you a link to reset your password
+            Enter your email address and we'll send you a link to reset your
+            password
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -90,13 +101,16 @@ export default function ForgotPasswordPage() {
                   Sending reset email...
                 </>
               ) : (
-                'Send Reset Email'
+                "Send Reset Email"
               )}
             </Button>
           </form>
 
           <div className="text-center text-sm">
-            <Link href="/auth/login" className="text-primary hover:underline flex items-center justify-center gap-2">
+            <Link
+              href="/auth/login"
+              className="text-primary hover:underline flex items-center justify-center gap-2"
+            >
               <ArrowLeft className="h-4 w-4" />
               Back to sign in
             </Link>
@@ -104,5 +118,5 @@ export default function ForgotPasswordPage() {
         </CardContent>
       </Card>
     </div>
-  )
-} 
+  );
+}

@@ -10,18 +10,9 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/lib/auth-context";
 
 export default function CreateUserCard() {
-  const { user } = useAuth();
-
-  const {
-    appUser,
-    exists,
-    loading,
-    createUser,
-    error: contextError,
-  } = useAppUser();
+  const { exists, loading, createUser, error: contextError } = useAppUser();
   const [username, setUsername] = useState("");
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);

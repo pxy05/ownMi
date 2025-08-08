@@ -7,7 +7,7 @@ function calculateHourlyRate(salary: number): number {
 }
 
 const page = () => {
-  const { appUser, loading, exists, error } = useAppUser();
+  const { appUser } = useAppUser();
   const hourlyRate = appUser
     ? calculateHourlyRate(parseInt(appUser.current_salary))
     : 0;

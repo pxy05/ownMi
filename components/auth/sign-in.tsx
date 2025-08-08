@@ -1,5 +1,6 @@
 import { signIn } from "@/auth";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function SignIn() {
   return (
@@ -17,7 +18,13 @@ export default function SignIn() {
         </div>
         <Button type="submit" className="w-full">
           <div className="flex items-center gap-2">
-            <img src="/github-mark.svg" alt="GitHub" className="w-5 h-5 dark:invert" />
+            <Image
+              src="/github-mark.svg"
+              alt="GitHub"
+              width={20}
+              height={20}
+              className="w-5 h-5 dark:invert"
+            />
             Sign in with GitHub
           </div>
         </Button>

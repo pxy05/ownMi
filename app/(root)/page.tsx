@@ -7,7 +7,7 @@ import LandingNoUser from "@/components/user-pages/landing-page-no-user";
 import LandingWithUser from "@/components/user-pages/landing-page-user";
 
 export default function Home() {
-  const { appUser, loading: appUserLoading, exists, error } = useAppUser();
+  const { loading: appUserLoading, exists, error } = useAppUser();
   const { user, loading: authLoading } = useAuth();
 
   // If no authenticated user, immediately show landing page for non-users

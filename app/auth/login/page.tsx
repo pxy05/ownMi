@@ -1,92 +1,106 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Eye, EyeOff, Mail, Lock, Loader2 } from 'lucide-react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Eye, EyeOff, Mail, Lock, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
-  const router = useRouter()
-  const supabase = createClient()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const router = useRouter();
+  const supabase = createClient();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-    setSuccess(null)
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
 
     try {
-      const { data,error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
-      })
+      });
 
       if (error) {
         // Handle specific error cases
-        if (error.message.includes('Email not confirmed') || error.message.includes('User not confirmed')) {
-          setError('Please check your email and click the confirmation link before signing in.')
-        } else if (error.message.includes('Invalid login credentials')) {
-          setError('Invalid email or password. Please try again.')
+        if (
+          error.message.includes("Email not confirmed") ||
+          error.message.includes("User not confirmed")
+        ) {
+          setError(
+            "Please check your email and click the confirmation link before signing in."
+          );
+        } else if (error.message.includes("Invalid login credentials")) {
+          setError("Invalid email or password. Please try again.");
         } else {
-          setError('An error occurred during sign in. Please try again.')
+          setError("An error occurred during sign in. Please try again.");
         }
-        console.error('Login error:', error)
+        console.error("Login error:", error);
       } else {
-        setSuccess('Successfully signed in! Redirecting...')
+        setSuccess("Successfully signed in! Redirecting...");
         // Redirect to home page or dashboard
         setTimeout(() => {
-          router.push('/')
-        }, 1000)
+          router.push("/");
+        }, 1000);
       }
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.')
-      console.error('Unexpected error:', err)
+      setError("An unexpected error occurred. Please try again.");
+      console.error("Unexpected error:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleGithubLogin = async () => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
 
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
+        provider: "github",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`
-        }
-      })
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
 
       if (error) {
-        setError('Failed to sign in with GitHub. Please try again.')
-        console.error('GitHub login error:', error)
+        setError("Failed to sign in with GitHub. Please try again.");
+        console.error("GitHub login error:", error);
       }
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.')
-      console.error('Unexpected error:', err)
+      setError("An unexpected error occurred. Please try again.");
+      console.error("Unexpected error:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Sign In</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">
+            Sign In
+          </CardTitle>
           <CardDescription className="text-center">
             Enter your credentials to access your account
           </CardDescription>
@@ -116,7 +130,7 @@ export default function LoginPage() {
                 <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -160,7 +174,7 @@ export default function LoginPage() {
                   Signing in...
                 </>
               ) : (
-                'Sign In'
+                "Sign In"
               )}
             </Button>
           </form>
@@ -170,7 +184,9 @@ export default function LoginPage() {
               <span className="w-full border-t" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with
+              </span>
             </div>
           </div>
 
@@ -181,24 +197,35 @@ export default function LoginPage() {
             onClick={handleGithubLogin}
             disabled={loading}
           >
-            <img src="/github-mark.svg" alt="GitHub" className="mr-0 h-4 w-4 dark:invert" />
+            <Image
+              src="/github-mark.svg"
+              alt="GitHub"
+              width={16}
+              height={16}
+              className="mr-0 h-4 w-4 dark:invert"
+            />
             Continue with GitHub
           </Button>
 
           <div className="text-center text-sm">
-            <span className="text-muted-foreground">Don't have an account? </span>
+            <span className="text-muted-foreground">
+              Don't have an account?{" "}
+            </span>
             <Link href="/auth/signup" className="text-primary hover:underline">
               Sign up
             </Link>
           </div>
 
           <div className="text-center text-sm">
-            <Link href="/auth/forgot-password" className="text-primary hover:underline">
+            <Link
+              href="/auth/forgot-password"
+              className="text-primary hover:underline"
+            >
               Forgot your password?
             </Link>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
-} 
+  );
+}
