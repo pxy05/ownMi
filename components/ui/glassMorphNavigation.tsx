@@ -35,8 +35,6 @@ export default function GlassmorphNavbar() {
   const { user, signOut } = useAuth();
   const { appUser } = useAppUser();
 
-  console.log(appUser?.username);
-
   const navClassName = `fixed left-1/2 top-0 z-50 mt-7 flex w-11/12 max-w-8xl -translate-x-1/2 flex-col items-center bg-background/20 p-3 backdrop-blur-lg ${
     isOpen ? "rounded-md" : "rounded-full"
   } md:rounded-full`;

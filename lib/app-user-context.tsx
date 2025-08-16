@@ -20,6 +20,7 @@ export interface AppUser {
   current_job_id: string | null;
   current_location_id: string | null;
   current_salary: string;
+  current_focus_session_id?: string | null;
 }
 
 interface AppUserContextType {
