@@ -60,6 +60,15 @@ const page = () => {
       console.log("Ending session for user:", user?.id);
       wsRef.current.send(JSON.stringify({ type: "end-session" }));
     }
+    setSessionConnected(false);
+    if (
+      wsRef.current &&
+      wsRef.current.readyState === WebSocket.OPEN &&
+      !sessionConnected
+    ) {
+      console.log("Starting new session for user:", user?.id);
+      wsRef.current.send(JSON.stringify({ type: "create-session" }));
+    }
   };
 
   const handleClear = () => {
