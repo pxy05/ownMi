@@ -35,7 +35,7 @@ export default function GlassmorphNavbar() {
   const { user, signOut } = useAuth();
   const { appUser } = useAppUser();
 
-  const navClassName = `fixed left-0 top-0 z-50 w-full flex flex-col items-center bg-background/20 p-0 backdrop-blur-lg`;
+  const navClassName = `fixed left-0 top-0 z-50 w-full flex flex-col items-center bg-background/20 p-1 backdrop-blur-lg`;
 
   const handleSignOut = async () => {
     try {

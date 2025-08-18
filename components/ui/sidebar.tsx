@@ -38,11 +38,13 @@ const Sidebar: React.FC<SidebarProps> = ({ items, side = "left" }) => {
         >
           {/* Sidebar content */}
           <div className="pl-4 pr-4 flex flex-col gap-4 h-full overflow-y-auto">
-            <ChartAreaGradient />
+            <div className="hover:shadow-lg duration-200 rounded-lg bg-none">
+              <ChartAreaGradient />
+            </div>
             {items.map((item, idx) => (
               <Card
                 key={idx}
-                className="p-3 hover:shadow-md transition-shadow duration-200 
+                className="p-3 hover:shadow-lg transition-shadow duration-200 
                 backdrop-blur-sm bg-muted/70 border border-border/40"
               >
                 {item}
