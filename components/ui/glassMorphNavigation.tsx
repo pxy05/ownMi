@@ -35,9 +35,7 @@ export default function GlassmorphNavbar() {
   const { user, signOut } = useAuth();
   const { appUser } = useAppUser();
 
-  const navClassName = `fixed left-1/2 top-0 z-50 mt-7 flex w-11/12 max-w-8xl -translate-x-1/2 flex-col items-center bg-background/20 p-3 backdrop-blur-lg ${
-    isOpen ? "rounded-md" : "rounded-full"
-  } md:rounded-full`;
+  const navClassName = `fixed left-0 top-0 z-50 w-full flex flex-col items-center bg-background/20 p-0 backdrop-blur-lg`;
 
   const handleSignOut = async () => {
     try {
@@ -55,8 +53,8 @@ export default function GlassmorphNavbar() {
           "background-color 0.3s ease-in-out, backdrop-filter 0.3s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out",
       }}
     >
-      <div className="flex w-full items-center justify-between">
-        <div className="flex items-center gap-2">
+      <div className="flex w-full items-center justify-between p-3">
+        <div className="flex items-center gap-2 ml-3">
           <Link href="/">
             <Image
               src="/work-study-icon.svg"
@@ -76,7 +74,7 @@ export default function GlassmorphNavbar() {
           </div>
         </div>
 
-        <div className="hidden md:block">
+        <div className="hidden md:block mr-3">
           <div className="flex items-center gap-2">
             {user ? (
               <div className="flex items-center gap-2">
