@@ -3,7 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { clear } from "console";
+import Sidebar from "@/components/ui/sidebar";
+import { ChartAreaGradient } from "@/components/ui-support/line-graph-chart";
+
+const log = false; // Set to true for debugging
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL;
 
@@ -46,7 +49,7 @@ const page = () => {
       setCleared(true);
     }
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      console.log("Starting session for user:", user?.id);
+      if (log) console.log("Starting session for user:", user?.id);
       wsRef.current.send(JSON.stringify({ type: "start-session" }));
       setTimerActive(true);
       setCleared(false);
@@ -57,16 +60,17 @@ const page = () => {
     setTimerActive(false);
     setFinalTime(clock);
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      console.log("Ending session for user:", user?.id);
+      if (log) console.log("Ending session for user:", user?.id);
       wsRef.current.send(JSON.stringify({ type: "end-session" }));
     }
     setSessionConnected(false);
+
     if (
       wsRef.current &&
       wsRef.current.readyState === WebSocket.OPEN &&
-      !sessionConnected
+      !sessionConnectedRef.current
     ) {
-      console.log("Starting new session for user:", user?.id);
+      if (log) console.log("Starting new session for user:", user?.id);
       wsRef.current.send(JSON.stringify({ type: "create-session" }));
     }
   };
@@ -110,17 +114,17 @@ const page = () => {
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("Received WebSocket message:", data.type);
+      if (log) console.log("Received WebSocket message:", data.type);
       switch (data.type) {
         case "sessionExists":
-          console.log("Session exists for user:", user?.id);
+          if (log) console.log("Session exists for user:", user?.id);
           setSessionConnected(true);
           break;
         case "noSessionExists":
-          console.log("No active session for user:", user?.id);
+          if (log) console.log("No active session for user:", user?.id);
           setSessionConnected(false);
           if (ws.readyState === WebSocket.OPEN && !sessionConnected) {
-            console.log("Sending Session Request...");
+            if (log) console.log("Sending Session Request...");
             ws.send(JSON.stringify({ type: "create-session" }));
           }
           break;
@@ -131,14 +135,14 @@ const page = () => {
 
     const heartbeat = setInterval(() => {
       if (ws.readyState === WebSocket.OPEN && sessionConnectedRef.current) {
-        console.log("Sending heartbeat...");
+        if (log) console.log("Sending heartbeat...");
         ws.send(JSON.stringify({ type: "heartbeat" }));
       }
     }, 10000);
 
     const sessionCheck = setInterval(() => {
       if (ws.readyState === WebSocket.OPEN && !sessionConnectedRef.current) {
-        console.log("Checking session status...");
+        if (log) console.log("Checking session status...");
         ws.send(JSON.stringify({ type: "sessionCheck" }));
       }
     }, 500);
@@ -147,7 +151,7 @@ const page = () => {
       clearInterval(sessionCheck);
       clearInterval(heartbeat);
       if (ws.readyState === WebSocket.OPEN && sessionConnectedRef.current) {
-        console.log("Ending session...");
+        if (log) console.log("Ending session...");
         ws.send(JSON.stringify({ type: "end-session" }));
       }
       ws.close();
@@ -156,28 +160,7 @@ const page = () => {
 
   return (
     <div className="flex flex-col items-center gap-8 mt-8">
-      <div className="flex gap-8 w-full">
-        <div className="flex-1">
-          <Card className="text-center">
-            <CardHeader>WebSocket Status</CardHeader>
-            <CardContent
-              className={socketConnected ? "text-green-500" : "text-red-500"}
-            >
-              {socketConnected ? "Connected" : "Disconnected"}
-            </CardContent>
-          </Card>
-        </div>
-        <div className="flex-1">
-          <Card className="text-center">
-            <CardHeader>Session Status</CardHeader>
-            <CardContent
-              className={sessionConnected ? "text-green-500" : "text-red-500"}
-            >
-              {sessionConnected ? "Session Active" : "No Active Session"}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <Sidebar items={["Stat 1", "Stat 2", "Stat 3"]} />
       <Card className="text-center w-full max-w-md">
         <CardHeader>Time Tracker</CardHeader>
         <CardContent>
