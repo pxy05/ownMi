@@ -19,8 +19,8 @@ export const navigationItems = [
     items: [],
   },
   {
-    title: "Finances",
-    href: "/finances",
+    title: "Statistics",
+    href: "/stats",
     items: [],
   },
   {
@@ -135,6 +135,7 @@ export default function GlassmorphNavbar() {
               >
                 Sign Out
               </Button>
+              <ModeToggle />
             </div>
           )}
         </div>

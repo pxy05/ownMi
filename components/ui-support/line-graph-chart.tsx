@@ -2,6 +2,9 @@
 
 import { TrendingUp } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import React from "react";
+import { useEffect, useState } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import {
   Card,
@@ -30,17 +33,54 @@ const chartData = [
 ];
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  focus_time: {
+    label: "Focus Time",
     color: "var(--chart-1)",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "var(--chart-2)",
   },
 } satisfies ChartConfig;
 
 export function ChartAreaGradient() {
+  const [chartData, setChartData] = useState<
+    { day: string; focus_time: number }[]
+  >([]);
+  const supabase = createClientComponentClient();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await supabase
+        .from("focus_sessions")
+        .select("start_time, duration_seconds")
+        .order("start_time", { ascending: true });
+
+      if (error) {
+        console.error("Error fetching sessions:", error);
+        return;
+      }
+
+      const grouped: Record<string, number> = {};
+
+      data?.forEach((sesh) => {
+        if (!sesh.start_time) return;
+
+        const day = new Date(sesh.start_time).toLocaleDateString("default", {
+          month: "short",
+          day: "numeric",
+        });
+
+        grouped[day] = (grouped[day] || 0) + (sesh.duration_seconds || 0);
+      });
+
+      const formatted = Object.entries(grouped).map(([day, total]) => ({
+        day,
+        focus_time: total / 3600, // seconds → hours
+      }));
+
+      setChartData(formatted);
+    };
+
+    fetchData();
+  }, [supabase]);
+
   return (
     <Card>
       <CardHeader>

@@ -153,19 +153,31 @@
   body {
     @apply bg-background text-foreground;
   }
-  
+
   /* Hide scrollbar for Chrome, Safari and Opera */
   ::-webkit-scrollbar {
     display: none;
   }
-  
+
   /* Hide scrollbar for IE, Edge and Firefox */
   html {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 }
 
 body {
   color: var(--foreground);
+}
+
+@keyframes smooth-rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+.animate-smooth-rainbow {
+  animation: smooth-rainbow 12s linear infinite;
 }
