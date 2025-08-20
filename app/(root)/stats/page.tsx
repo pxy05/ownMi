@@ -8,8 +8,8 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { useAppUser } from "@/lib/app-user-context";
-import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
+import { ChartAreaGradient } from "@/components/ui-support/line-graph-chart";
 
 const page = () => {
   const { appUser } = useAppUser();
@@ -66,10 +66,11 @@ const page = () => {
             <CardContent>
               <CardDescription>
                 This card shows the total focus time for the user.
-                <span className="font-semibold">
-                  {Math.floor(totalFocusTime / 3600)} minutes
-                </span>
               </CardDescription>
+              <span className="font-semibold">
+                Total Time: {Math.floor(totalFocusTime / 3600)} minutes
+              </span>
+              <ChartAreaGradient />
             </CardContent>
           </Card>
 
