@@ -1,5 +1,3 @@
-"use client";
-
 import { TrendingUp } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import React from "react";
@@ -21,16 +19,9 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-export const description = "An area chart with gradient fill";
+import { useParsedChartData } from "./parse-focus-sessions";
 
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-];
+export const description = "An area chart with gradient fill";
 
 const chartConfig = {
   focus_time: {
@@ -39,74 +30,81 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ChartAreaGradient() {
-  const [chartData, setChartData] = useState<
-    { day: string; focus_time: number }[]
-  >([]);
-  const supabase = createClientComponentClient();
+interface Session {
+  start_time: string;
+  duration_seconds: number;
+}
+
+const ChartAreaGradient = ({
+  userId,
+  timeSpan,
+}: {
+  userId: string;
+  timeSpan: string;
+}) => {
+  console.log("User ID:", userId, "Type", typeof userId);
+  const [rawData, setRawData] = useState<Session[]>([]);
+  const chartData = useParsedChartData(rawData);
 
   useEffect(() => {
+    const supabase = createClientComponentClient();
+
     const fetchData = async () => {
       const { data, error } = await supabase
         .from("focus_sessions")
         .select("start_time, duration_seconds")
-        .order("start_time", { ascending: true });
+        .eq("user_id", userId);
 
       if (error) {
-        console.error("Error fetching sessions:", error);
+        console.error("Error fetching data:", error);
         return;
       }
 
-      const grouped: Record<string, number> = {};
+      console.log("Fetched data:", data);
 
-      data?.forEach((sesh) => {
-        if (!sesh.start_time) return;
-
-        const day = new Date(sesh.start_time).toLocaleDateString("default", {
-          month: "short",
-          day: "numeric",
-        });
-
-        grouped[day] = (grouped[day] || 0) + (sesh.duration_seconds || 0);
-      });
-
-      const formatted = Object.entries(grouped).map(([day, total]) => ({
-        day,
-        focus_time: total / 3600, // seconds → hours
-      }));
-
-      setChartData(formatted);
+      setRawData(data as Session[]);
     };
 
     fetchData();
-  }, [supabase]);
+  }, [userId]);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Area Chart - Gradient</CardTitle>
+        <CardTitle>Focus Sessions</CardTitle>
         <CardDescription>
-          Showing total visitors for the last 6 months
+          Showing Focus Sessions For the Last Week
         </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
           <AreaChart
             accessibilityLayer
-            data={chartData}
+            data={chartData.today}
             margin={{
               left: 12,
               right: 12,
             }}
           >
             <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
+            {timeSpan === "today" && (
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                tickFormatter={(value) => value.slice(5)}
+              />
+            )}
+            {timeSpan === "lastWeek" && (
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                tickFormatter={(value) => value.slice(5)}
+              />
+            )}
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <defs>
               <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
@@ -135,20 +133,11 @@ export function ChartAreaGradient() {
               </linearGradient>
             </defs>
             <Area
-              dataKey="mobile"
-              type="natural"
-              fill="url(#fillMobile)"
-              fillOpacity={0.4}
-              stroke="var(--color-mobile)"
-              stackId="a"
-            />
-            <Area
-              dataKey="desktop"
+              dataKey="duration"
               type="natural"
               fill="url(#fillDesktop)"
               fillOpacity={0.4}
               stroke="var(--color-desktop)"
-              stackId="a"
             />
           </AreaChart>
         </ChartContainer>
@@ -160,11 +149,13 @@ export function ChartAreaGradient() {
               Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
             </div>
             <div className="text-muted-foreground flex items-center gap-2 leading-none">
-              January - June 2024
+              <span>Last 7 days</span>
             </div>
           </div>
         </div>
       </CardFooter>
     </Card>
   );
-}
+};
+
+export default ChartAreaGradient;
