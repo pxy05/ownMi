@@ -99,7 +99,7 @@ export default function GlassmorphNavbar() {
             )}
             <ModeToggle />
             <SearchDropDown />
-            <AppsDropDown />
+            <AppsDropDown navItems={navigationItems} />
           </div>
         </div>
 

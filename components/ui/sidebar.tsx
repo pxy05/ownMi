@@ -2,15 +2,22 @@ import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import ChartAreaGradient from "../ui-support/line-graph-chart";
+import ChartAreaGradient from "../ui-support/focus-chart";
 import { useAuth } from "@/lib/auth-context";
 
 interface SidebarProps {
   items: string[];
   side?: "left" | "right";
+  theme: string;
+  reset: number;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ items, side = "left" }) => {
+const Sidebar: React.FC<SidebarProps> = ({
+  items,
+  side = "left",
+  theme,
+  reset,
+}) => {
   const [open, setOpen] = useState(false);
   const [sidebarSide, setSidebarSide] = useState<"left" | "right">(side);
   const { user } = useAuth();
@@ -39,7 +46,12 @@ const Sidebar: React.FC<SidebarProps> = ({ items, side = "left" }) => {
         >
           <div className="pl-4 pr-4 flex flex-col gap-4 h-full overflow-y-auto">
             <div className="hover:shadow-lg duration-200 rounded-lg bg-none">
-              <ChartAreaGradient userId={String(user?.id ?? "")} />
+              <ChartAreaGradient
+                userId={String(user?.id ?? "")}
+                theme={String(theme)}
+                mini={true}
+                reset={reset}
+              />
             </div>
             {items.map((item, idx) => (
               <Card

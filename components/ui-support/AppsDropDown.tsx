@@ -8,9 +8,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { LayoutGrid } from "lucide-react";
 import Link from "next/link";
-import { navigationItems } from "../ui/glassMorphNavigation";
 
-const AppsDropDown = () => {
+const AppsDropDown = ({
+  navItems,
+}: {
+  navItems: { title: string; href: string }[];
+}) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -24,7 +27,7 @@ const AppsDropDown = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
-        {navigationItems.map((item) => (
+        {navItems.map((item) => (
           <DropdownMenuItem asChild key={item.href}>
             <Link href={item.href}>{item.title}</Link>
           </DropdownMenuItem>

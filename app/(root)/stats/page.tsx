@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { useAppUser } from "@/lib/app-user-context";
 import { useAuth } from "@/lib/auth-context";
-import ChartAreaGradient from "@/components/ui-support/line-graph-chart";
+import ChartAreaGradient from "@/components/ui-support/focus-chart";
 import { useTheme } from "next-themes";
 
 const page = () => {
@@ -41,7 +41,12 @@ const page = () => {
                 This card shows the total focus time for the user.
               </CardDescription>
               <span className="font-semibold"></span>
-              <ChartAreaGradient userId={String(user?.id)} theme={theme} />
+              <ChartAreaGradient
+                userId={String(user?.id)}
+                theme={String(theme)}
+                mini={false}
+                reset={0}
+              />
             </CardContent>
           </Card>
 

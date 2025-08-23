@@ -79,6 +79,8 @@ const page = () => {
       if (log) console.log("Starting new session for user:", user?.id);
       wsRef.current.send(JSON.stringify({ type: "create-session" }));
     }
+
+    handleEndSession();
   };
 
   const handleClear = () => {
@@ -170,6 +172,7 @@ const page = () => {
         key={sidebarKey}
         items={["Stat 1", "Stat 2", "Stat 3"]}
         theme={String(theme)}
+        reset={sidebarKey}
       />
       <Card className="text-center w-full max-w-md">
         <CardHeader>Time Tracker</CardHeader>

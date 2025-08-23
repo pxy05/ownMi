@@ -39,12 +39,16 @@ interface Session {
 
 type TimeRange = "today" | "lastWeek" | "lastMonth" | "lastYear";
 
-const ChartAreaGradient = ({
+const focusChart = ({
   userId,
   theme,
+  mini,
+  reset,
 }: {
   userId: string;
   theme: string;
+  mini: boolean;
+  reset: number;
 }) => {
   const [timeRange, setTimeRange] = useState<TimeRange>("today");
   const [rawData, setRawData] = useState<Session[]>([]);
@@ -188,7 +192,15 @@ const ChartAreaGradient = ({
                   axisLine={false}
                   tickMargin={8}
                   tickFormatter={formatXAxisTick}
-                  interval={timeRange === "today" ? 2 : "preserveStartEnd"}
+                  interval={
+                    mini
+                      ? timeRange === "today"
+                        ? 4
+                        : "preserveStartEnd"
+                      : timeRange === "today"
+                      ? 2
+                      : "preserveStartEnd"
+                  }
                   className={`text-xs ${textColor}`}
                 />
                 <YAxis
@@ -237,4 +249,4 @@ const ChartAreaGradient = ({
   );
 };
 
-export default ChartAreaGradient;
+export default focusChart;
