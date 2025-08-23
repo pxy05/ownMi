@@ -8,41 +8,14 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { useAppUser } from "@/lib/app-user-context";
-import { createClient } from "@/lib/supabase/client";
-import { ChartAreaGradient } from "@/components/ui-support/line-graph-chart";
+import { useAuth } from "@/lib/auth-context";
+import ChartAreaGradient from "@/components/ui-support/focus-chart";
+import { useTheme } from "next-themes";
 
 const page = () => {
   const { appUser } = useAppUser();
-  const supabase = createClient();
-
-  const [userFocusSessions, setUserFocusSessions] = React.useState<any[]>([]);
-  const [totalFocusTime, setTotalFocusTime] = React.useState<number>(0);
-
-  React.useEffect(() => {
-    async function fetchFocusSessions() {
-      const { data, error } = await supabase
-        .from("focus_sessions")
-        .select("*")
-        .eq("user_id", appUser?.id);
-
-      if (data) {
-        setUserFocusSessions(data);
-        setTotalFocusTime(getTotalFocusTime(data));
-      }
-    }
-
-    if (appUser?.id) {
-      fetchFocusSessions();
-    }
-  }, [appUser?.id, supabase]);
-
-  function getTotalFocusTime(userFocusSessions: any[]) {
-    let totalFocus = 0;
-    for (const sesh of userFocusSessions) {
-      totalFocus += sesh.duration_seconds;
-    }
-    return totalFocus;
-  }
+  const { user } = useAuth();
+  const { theme } = useTheme();
 
   return (
     appUser && (
@@ -67,10 +40,13 @@ const page = () => {
               <CardDescription>
                 This card shows the total focus time for the user.
               </CardDescription>
-              <span className="font-semibold">
-                Total Time: {Math.floor(totalFocusTime / 3600)} minutes
-              </span>
-              <ChartAreaGradient />
+              <span className="font-semibold"></span>
+              <ChartAreaGradient
+                userId={String(user?.id)}
+                theme={String(theme)}
+                mini={false}
+                reset={0}
+              />
             </CardContent>
           </Card>
 

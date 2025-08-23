@@ -4,13 +4,14 @@ import { useAuth } from "@/lib/auth-context";
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Sidebar from "@/components/ui/sidebar";
-import { ChartAreaGradient } from "@/components/ui-support/line-graph-chart";
+import { useTheme } from "next-themes";
 
 const log = false; // Set to true for debugging
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL;
 
 const page = () => {
+  const { theme } = useTheme();
   // websocket logic -------------
   const [socketConnected, setSocketConnected] = useState(false);
   const [sessionConnected, setSessionConnected] = useState(false);
@@ -27,6 +28,15 @@ const page = () => {
   const [finalTime, setFinalTime] = useState<number | null>(null);
   const [cleared, setCleared] = useState(true);
   const clockInterval = useRef<NodeJS.Timeout | null>(null);
+
+  // refresh sidebar logic -------
+  const [sidebarKey, setSidebarKey] = useState(0);
+
+  const handleEndSession = () => {
+    // ...existing end session logic...
+    setSidebarKey((prev) => prev + 1); // Increment to force Sidebar re-mount
+  };
+
   // Timer effect
   useEffect(() => {
     if (timerActive) {
@@ -65,14 +75,12 @@ const page = () => {
     }
     setSessionConnected(false);
 
-    if (
-      wsRef.current &&
-      wsRef.current.readyState === WebSocket.OPEN &&
-      !sessionConnectedRef.current
-    ) {
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       if (log) console.log("Starting new session for user:", user?.id);
       wsRef.current.send(JSON.stringify({ type: "create-session" }));
     }
+
+    handleEndSession();
   };
 
   const handleClear = () => {
@@ -160,7 +168,12 @@ const page = () => {
 
   return (
     <div className="flex flex-col items-center gap-8 mt-8">
-      <Sidebar items={["Stat 1", "Stat 2", "Stat 3"]} />
+      <Sidebar
+        key={sidebarKey}
+        items={["Stat 1", "Stat 2", "Stat 3"]}
+        theme={String(theme)}
+        reset={sidebarKey}
+      />
       <Card className="text-center w-full max-w-md">
         <CardHeader>Time Tracker</CardHeader>
         <CardContent>
