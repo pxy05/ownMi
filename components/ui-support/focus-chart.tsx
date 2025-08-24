@@ -74,7 +74,7 @@ const focusChart = ({
         .select("start_time, duration_seconds")
         .eq("user_id", userId);
 
-      if (error) {
+      if (error != null) {
         console.error("Error fetching data:", error);
         return;
       }
@@ -89,12 +89,15 @@ const focusChart = ({
 
   const formatDuration = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
+    const minutes = (seconds % 3600) / 60;
 
     if (hours > 0) {
-      return `${hours}h ${minutes}m`;
+      return `${hours}h ${minutes.toFixed(1)}m`;
     }
-    return `${minutes}m`;
+    if (minutes < 1) {
+      return "<1m";
+    }
+    return `${minutes.toFixed(0)}m`;
   };
 
   const formatXAxisTick = (tickItem: string) => {

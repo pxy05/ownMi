@@ -5,6 +5,11 @@ import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Sidebar from "@/components/ui/sidebar";
 import { useTheme } from "next-themes";
+import dynamic from "next/dynamic";
+const ChartAreaGradient = dynamic(
+  () => import("@/components/ui-support/focus-chart"),
+  { ssr: true }
+);
 
 const log = false; // Set to true for debugging
 
@@ -16,6 +21,8 @@ const page = () => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [sessionConnected, setSessionConnected] = useState(false);
   const sessionConnectedRef = useRef(false);
+  const [sessionStarted, setSessionStarted] = useState(false);
+  const [sessionEnded, setSessionEnded] = useState(false);
 
   const wsRef = useRef<WebSocket | null>(null);
   const ws = wsRef.current;
@@ -61,8 +68,6 @@ const page = () => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       if (log) console.log("Starting session for user:", user?.id);
       wsRef.current.send(JSON.stringify({ type: "start-session" }));
-      setTimerActive(true);
-      setCleared(false);
     }
   };
 
@@ -73,14 +78,6 @@ const page = () => {
       if (log) console.log("Ending session for user:", user?.id);
       wsRef.current.send(JSON.stringify({ type: "end-session" }));
     }
-    setSessionConnected(false);
-
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      if (log) console.log("Starting new session for user:", user?.id);
-      wsRef.current.send(JSON.stringify({ type: "create-session" }));
-    }
-
-    handleEndSession();
   };
 
   const handleClear = () => {
@@ -128,6 +125,7 @@ const page = () => {
           if (log) console.log("Session exists for user:", user?.id);
           setSessionConnected(true);
           break;
+
         case "noSessionExists":
           if (log) console.log("No active session for user:", user?.id);
           setSessionConnected(false);
@@ -136,6 +134,31 @@ const page = () => {
             ws.send(JSON.stringify({ type: "create-session" }));
           }
           break;
+
+        case "sessionCreated":
+          if (log) console.log("Session created for user:", user?.id);
+          setSessionConnected(true);
+          break;
+
+        case "sessionStarted":
+          if (log) console.log("Session started for user:", user?.id);
+          setSessionEnded(false);
+          setSessionStarted(true);
+          setTimerActive(true);
+          setCleared(false);
+          break;
+
+        case "sessionEnded":
+          if (log) console.log("Session ended for user:", user?.id);
+          setSessionEnded(true);
+          setSessionConnected(false);
+
+          if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+            if (log) console.log("Starting new session for user:", user?.id);
+            wsRef.current.send(JSON.stringify({ type: "create-session" }));
+          }
+          break;
+
         default:
           break;
       }
@@ -151,7 +174,7 @@ const page = () => {
     const sessionCheck = setInterval(() => {
       if (ws.readyState === WebSocket.OPEN && !sessionConnectedRef.current) {
         if (log) console.log("Checking session status...");
-        ws.send(JSON.stringify({ type: "sessionCheck" }));
+        ws.send(JSON.stringify({ type: "session-check" }));
       }
     }, 500);
 

@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import ChartAreaGradient from "../ui-support/focus-chart";
 import { useAuth } from "@/lib/auth-context";
+import dynamic from "next/dynamic";
+const ChartAreaGradient = dynamic(() => import("../ui-support/focus-chart"), {
+  ssr: false,
+});
 
 interface SidebarProps {
   items: string[];
