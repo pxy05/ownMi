@@ -258,13 +258,6 @@ const page = () => {
               </div>
             </CardContent>
           </Card>
-          <Button
-            className="absolute top-4 right-4 border-white/30 hover:bg-white/10"
-            variant="ghost"
-            onClick={() => setZenMode(false)}
-          >
-            Exit
-          </Button>
         </div>
       )}
 
@@ -274,7 +267,7 @@ const page = () => {
         variant="ghost"
         onClick={() => setZenMode(!zenMode)}
       >
-        zen
+        {zenMode ? "leave zen" : "zen"}
       </Button>
     </div>
   );
