@@ -240,9 +240,16 @@ const page = () => {
         </>
       )}
       {zenMode && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
-          <Card className="text-center w-full max-w-md">
-            <CardHeader>Time Tracker</CardHeader>
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 w-[200vmax] h-[200vmax] -top-[50vmax] -left-[50vmax] bg-gradient-to-r from-black via-white to-black animate-spin"
+            style={{ animationDuration: "45s" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900/60 to-black" />
+          <Card className="text-center w-full max-w-md relative z-10 bg-black/40 backdrop-blur-sm border-gray-600">
+            <CardHeader>
+              <CardTitle>Time Tracker</CardTitle>
+            </CardHeader>
             <CardContent>
               <div className="mb-4 text-6xl font-mono">
                 {finalTime !== null
@@ -252,7 +259,7 @@ const page = () => {
             </CardContent>
           </Card>
           <Button
-            className="absolute top-4 right-4"
+            className="absolute top-4 right-4 border-white/30 hover:bg-white/10"
             variant="ghost"
             onClick={() => setZenMode(false)}
           >
