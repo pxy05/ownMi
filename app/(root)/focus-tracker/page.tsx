@@ -17,6 +17,7 @@ const WS_URL = process.env.NEXT_PUBLIC_WS_URL;
 
 const page = () => {
   const { theme } = useTheme();
+  const [zenMode, setZenMode] = useState(false);
   // websocket logic -------------
   const [socketConnected, setSocketConnected] = useState(false);
   const [sessionConnected, setSessionConnected] = useState(false);
@@ -191,47 +192,83 @@ const page = () => {
 
   return (
     <div className="flex flex-col items-center gap-8 mt-8">
-      <Sidebar
-        key={sidebarKey}
-        items={["Stat 1", "Stat 2", "Stat 3"]}
-        theme={String(theme)}
-        reset={sidebarKey}
-      />
-      <Card className="text-center w-full max-w-md">
-        <CardHeader>Time Tracker</CardHeader>
-        <CardContent>
-          <div className="mb-4 text-4xl font-mono">
-            {finalTime !== null ? formatClock(finalTime) : formatClock(clock)}
-          </div>
-          <div className="flex gap-2 justify-center">
-            <Button
-              onClick={handleStart}
-              disabled={timerActive || !socketConnected}
-            >
-              Start
-            </Button>
-            <Button
-              onClick={handleEnd}
-              disabled={!timerActive || !socketConnected}
-              variant="outline"
-            >
-              End
-            </Button>
-            <Button
-              onClick={handleClear}
-              disabled={timerActive}
-              variant="secondary"
-            >
-              Clear
-            </Button>
-          </div>
-          {finalTime !== null && (
-            <div className="mt-2 text-sm text-gray-500">
-              Final time: {formatClock(finalTime)}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {!zenMode && (
+        <>
+          <Sidebar
+            key={sidebarKey}
+            items={["Stat 1", "Stat 2", "Stat 3"]}
+            theme={String(theme)}
+            reset={sidebarKey}
+          />
+          <Card className="text-center w-full max-w-md">
+            <CardHeader>Time Tracker</CardHeader>
+            <CardContent>
+              <div className="mb-4 text-4xl font-mono">
+                {finalTime !== null
+                  ? formatClock(finalTime)
+                  : formatClock(clock)}
+              </div>
+              <div className="flex gap-2 justify-center">
+                <Button
+                  onClick={handleStart}
+                  disabled={timerActive || !socketConnected}
+                >
+                  Start
+                </Button>
+                <Button
+                  onClick={handleEnd}
+                  disabled={!timerActive || !socketConnected}
+                  variant="outline"
+                >
+                  End
+                </Button>
+                <Button
+                  onClick={handleClear}
+                  disabled={timerActive}
+                  variant="secondary"
+                >
+                  Clear
+                </Button>
+              </div>
+              {finalTime !== null && (
+                <div className="mt-2 text-sm text-gray-500">
+                  Final time: {formatClock(finalTime)}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </>
+      )}
+      {zenMode && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 w-[200vmax] h-[200vmax] -top-[50vmax] -left-[50vmax] bg-gradient-to-r from-black via-white to-black animate-spin"
+            style={{ animationDuration: "45s" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900/60 to-black" />
+          <Card className="text-center w-full max-w-md relative z-10 bg-black/40 backdrop-blur-sm border-gray-600">
+            <CardHeader>
+              <CardTitle>Time Tracker</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-4 text-6xl font-mono">
+                {finalTime !== null
+                  ? formatClock(finalTime)
+                  : formatClock(clock)}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Zen button (always visible) */}
+      <Button
+        className="fixed bottom-4 right-4 z-50 opacity-60 hover:opacity-100"
+        variant="ghost"
+        onClick={() => setZenMode(!zenMode)}
+      >
+        {zenMode ? "leave zen" : "zen"}
+      </Button>
     </div>
   );
 };
