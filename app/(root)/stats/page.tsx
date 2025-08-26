@@ -13,9 +13,61 @@ import ChartAreaGradient from "@/components/ui-support/focus-chart";
 import { useTheme } from "next-themes";
 
 const page = () => {
-  const { appUser } = useAppUser();
   const { user } = useAuth();
   const { theme } = useTheme();
+
+  const {
+    focusSessions,
+    focusSessionsLoading,
+    addFocusSessionLocally,
+    addManualFocusSession,
+    editFocusSession,
+    deleteFocusSession,
+    appUser,
+  } = useAppUser();
+
+  const handleAddManualSession = async (start_time: Date, end_time: Date) => {
+    try {
+      const result = await addManualFocusSession(start_time, end_time);
+      if (result.success) {
+        console.log("Manual session added successfully");
+      } else {
+        console.error("Error:", result.error);
+      }
+    } catch (error) {
+      console.error("Error adding manual session:", error);
+    }
+  };
+
+  const handleEditSession = async (
+    sessionId: string,
+    start_time: Date,
+    end_time: Date
+  ) => {
+    try {
+      const result = await editFocusSession(sessionId, start_time, end_time);
+      if (result.success) {
+        console.log("Session updated successfully");
+      } else {
+        console.error("Error:", result.error);
+      }
+    } catch (error) {
+      console.error("Error updating session:", error);
+    }
+  };
+
+  const handleDeleteSession = async (sessionId: string) => {
+    try {
+      const result = await deleteFocusSession(sessionId);
+      if (result.success) {
+        console.log("Session deleted successfully");
+      } else {
+        console.error("Error:", result.error);
+      }
+    } catch (error) {
+      console.error("Error deleting session:", error);
+    }
+  };
 
   return (
     appUser && (

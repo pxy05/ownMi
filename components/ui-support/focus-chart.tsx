@@ -1,10 +1,10 @@
+"use client";
+
 import { TrendingUp } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import React from "react";
-import { useEffect, useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useState } from "react";
 import { format } from "date-fns";
-import { useTheme } from "next-themes";
 
 import {
   Card,
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/chart";
 
 import { useParsedChartData } from "./parse-focus-sessions";
+import { useAppUser } from "@/lib/app-user-context";
 
 export const description = "An area chart with gradient fill";
 
@@ -31,11 +32,6 @@ const chartConfig = {
     color: "var(--chart-2)",
   },
 } satisfies ChartConfig;
-
-interface Session {
-  start_time: string;
-  duration_seconds: number;
-}
 
 type TimeRange = "today" | "lastWeek" | "lastMonth" | "lastYear";
 
@@ -51,7 +47,27 @@ const focusChart = ({
   reset: number;
 }) => {
   const [timeRange, setTimeRange] = useState<TimeRange>("today");
-  const [rawData, setRawData] = useState<Session[]>([]);
+
+  // Use the context instead of direct SWR
+  const {
+    focusSessions,
+    focusSessionsLoading,
+    focusSessionsError,
+    addFocusSessionLocally,
+    addManualFocusSession,
+    editFocusSession,
+    deleteFocusSession,
+    refreshFocusSessions,
+  } = useAppUser();
+
+  // Convert focusSessions to the format expected by useParsedChartData
+  const rawData =
+    focusSessions?.map((session) => ({
+      id: session.id,
+      start_time: session.start_time,
+      duration_seconds: session.duration_seconds,
+    })) || [];
+
   const chartData = useParsedChartData(rawData);
 
   var textColor = "text-gray-700";
@@ -64,26 +80,6 @@ const focusChart = ({
     textColor = "text-foreground";
     bgColor = "bg-background";
   }
-
-  useEffect(() => {
-    const supabase = createClientComponentClient();
-
-    const fetchData = async () => {
-      const { data, error } = await supabase
-        .from("focus_sessions")
-        .select("start_time, duration_seconds")
-        .eq("user_id", userId);
-
-      if (error != null) {
-        console.error("Error fetching data:", error);
-        return;
-      }
-
-      setRawData(data as Session[]);
-    };
-
-    fetchData();
-  }, [userId]);
 
   const currentData = chartData[timeRange];
 
@@ -128,6 +124,33 @@ const focusChart = ({
     );
   };
 
+  // Loading state
+  if (focusSessionsLoading) {
+    return (
+      <Card>
+        <CardContent className="p-8 flex items-center justify-center">
+          <p className="text-gray-500 text-center">Loading sessions...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Error state
+  if (focusSessionsError) {
+    return (
+      <Card>
+        <CardContent className="p-8 flex items-center justify-center">
+          <p className="text-red-500 text-center">
+            Error loading data.{" "}
+            <button onClick={refreshFocusSessions} className="underline">
+              Retry
+            </button>
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex gap-2">
@@ -152,6 +175,13 @@ const focusChart = ({
             </button>
           )
         )}
+        {/* Add refresh button */}
+        <button
+          onClick={refreshFocusSessions}
+          className={`px-4 py-1 rounded-lg transition-colors font-medium text-sm ${bgColor} text-gray-700 hover:bg-gray-200`}
+        >
+          Refresh
+        </button>
       </div>
 
       {!currentData || currentData.length === 0 ? (

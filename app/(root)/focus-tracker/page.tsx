@@ -5,11 +5,6 @@ import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Sidebar from "@/components/ui/sidebar";
 import { useTheme } from "next-themes";
-import dynamic from "next/dynamic";
-const ChartAreaGradient = dynamic(
-  () => import("@/components/ui-support/focus-chart"),
-  { ssr: true }
-);
 
 const log = false; // Set to true for debugging
 
@@ -18,6 +13,15 @@ const WS_URL = process.env.NEXT_PUBLIC_WS_URL;
 const page = () => {
   const { theme } = useTheme();
   const [zenMode, setZenMode] = useState(false);
+  const [colorMode, setColorMode] = useState("green");
+  const colours: Record<string, string> = {
+    purple: "#5B00C0",
+    green: "#4ade80",
+    blue: "#3b82f6",
+    red: "#ef4444",
+    orange: "#f97316",
+  };
+
   // websocket logic -------------
   const [socketConnected, setSocketConnected] = useState(false);
   const [sessionConnected, setSessionConnected] = useState(false);
@@ -130,7 +134,10 @@ const page = () => {
         case "noSessionExists":
           if (log) console.log("No active session for user:", user?.id);
           setSessionConnected(false);
-          if (ws.readyState === WebSocket.OPEN && !sessionConnected) {
+          if (
+            ws.readyState === WebSocket.OPEN &&
+            !sessionConnectedRef.current
+          ) {
             if (log) console.log("Sending Session Request...");
             ws.send(JSON.stringify({ type: "create-session" }));
           }
@@ -242,33 +249,89 @@ const page = () => {
       {zenMode && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
-            className="absolute inset-0 w-[200vmax] h-[200vmax] -top-[50vmax] -left-[50vmax] bg-gradient-to-r from-black via-white to-black animate-spin"
-            style={{ animationDuration: "45s" }}
+            className="absolute inset-0 w-[200vmax] h-[200vmax] -top-[50vmax] -left-[50vmax] animate-spin"
+            style={
+              {
+                "--color-primary": colours[colorMode],
+                background: `linear-gradient(#4b5563,var(--color-primary), #6b7280)`,
+                animationDuration: "10s",
+                animationTimingFunction: "cubic-bezier(0.4, 0, 0.2, 0.5)",
+              } as React.CSSProperties
+            }
           />
           <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900/60 to-black" />
-          <Card className="text-center w-full max-w-md relative z-10 bg-black/40 backdrop-blur-sm border-gray-600">
+          <Card className="text-center w-full max-w-md relative z-10 bg-black/40 backdrop-blur-sm border-black text-gray-500/70">
             <CardHeader>
               <CardTitle>Time Tracker</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="mb-4 text-6xl font-mono">
+              <div className="mb-4 text-4xl font-mono ">
                 {finalTime !== null
                   ? formatClock(finalTime)
                   : formatClock(clock)}
               </div>
+              <div className="flex gap-2 justify-center">
+                <Button
+                  className="bg-white/80 hover:bg-white/60"
+                  onClick={handleStart}
+                  disabled={timerActive || !socketConnected}
+                >
+                  Start
+                </Button>
+                <Button
+                  onClick={handleEnd}
+                  disabled={!timerActive || !socketConnected}
+                  variant="outline"
+                >
+                  End
+                </Button>
+                <Button
+                  className="bg-black/40 hover:bg-green-950/40"
+                  onClick={handleClear}
+                  disabled={timerActive}
+                  variant="secondary"
+                >
+                  Clear
+                </Button>
+              </div>
+              {finalTime !== null && (
+                <div className="mt-2 text-sm text-gray-500/50">
+                  Final time: {formatClock(finalTime)}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
       )}
 
-      {/* Zen button (always visible) */}
-      <Button
-        className="fixed bottom-4 right-4 z-50 opacity-60 hover:opacity-100"
-        variant="ghost"
-        onClick={() => setZenMode(!zenMode)}
-      >
-        {zenMode ? "leave zen" : "zen"}
-      </Button>
+      <div className="fixed bottom-4 right-4 z-50 grid-cols-2 text-sm">
+        <Button
+          className="z-50 opacity-60 hover:opacity-100 hover:text-xl transition-all"
+          variant="ghost"
+          onClick={() =>
+            setColorMode((colorMode) =>
+              colorMode === "purple"
+                ? "green"
+                : colorMode === "green"
+                ? "blue"
+                : colorMode === "blue"
+                ? "red"
+                : colorMode === "red"
+                ? "orange"
+                : "purple"
+            )
+          }
+        >
+          colour
+        </Button>
+        <Button
+          className="z-50 opacity-60 hover:opacity-100 hover:text-xl transition-all"
+          variant="ghost"
+          onClick={() => setZenMode(!zenMode)}
+        >
+          {zenMode ? "leave zen" : "zen"}
+        </Button>
+      </div>
     </div>
   );
 };
