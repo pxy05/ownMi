@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useAuth } from "./auth-context";
 import { createClient } from "./supabase/client";
 import useSWR, { mutate } from "swr";
@@ -24,6 +30,7 @@ export interface AppUser {
 }
 
 export interface FocusSession {
+  session_type: ReactNode;
   id: string;
   user_id: string;
   start_time: string;
@@ -60,9 +67,8 @@ interface AppUserContextType {
   ) => Promise<{ success: boolean; error?: string }>;
   editFocusSession: (
     sessionId: string,
-    updates: Partial<
-      Pick<FocusSession, "start_time" | "end_time" | "duration_seconds">
-    >
+    start_time: Date,
+    end_time: Date
   ) => Promise<{ success: boolean; error?: string }>;
   deleteFocusSession: (
     sessionId: string
@@ -315,9 +321,8 @@ export function AppUserProvider({ children }: { children: React.ReactNode }) {
   // edit focus sessions
   const editFocusSession = async (
     sessionId: string,
-    updates: Partial<
-      Pick<FocusSession, "start_time" | "end_time" | "duration_seconds">
-    >
+    start_time: Date,
+    end_time: Date
   ): Promise<{ success: boolean; error?: string }> => {
     if (!user?.id) {
       return { success: false, error: "No authenticated user" };
@@ -335,10 +340,16 @@ export function AppUserProvider({ children }: { children: React.ReactNode }) {
       };
     }
 
+    const duration = (end_time.getTime() - start_time.getTime()) / 1000;
+
     try {
       const { data, error } = await supabase
         .from("focus_sessions")
-        .update(updates)
+        .update({
+          start_time: start_time.toISOString(),
+          end_time: end_time.toISOString(),
+          duration_seconds: duration,
+        })
         .eq("id", sessionId)
         .eq("user_id", user.id)
         .select()
@@ -349,7 +360,14 @@ export function AppUserProvider({ children }: { children: React.ReactNode }) {
       if (data) {
         const updatedSessions =
           focusSessions?.map((session) =>
-            session.id === sessionId ? { ...session, ...updates } : session
+            session.id === sessionId
+              ? {
+                  ...session,
+                  start_time: start_time.toISOString(),
+                  end_time: end_time.toISOString(),
+                  duration_seconds: duration,
+                }
+              : session
           ) || [];
         await mutateFocusSessions(updatedSessions, false);
 

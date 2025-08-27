@@ -1,5 +1,5 @@
 import { startOfDay, subDays, isAfter, format, startOfHour } from "date-fns";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface Session {
   start_time: string;
@@ -20,8 +20,23 @@ export function useParsedChartData(data: Session[]) {
     lastYear: ChartPoint[];
   }>({ today: [], lastWeek: [], lastMonth: [], lastYear: [] });
 
+  const prevDataRef = useRef<string>("");
+
   useEffect(() => {
-    if (!data || data.length === 0) return;
+    if (!data || data.length === 0) {
+      setChartData({ today: [], lastWeek: [], lastMonth: [], lastYear: [] });
+      return;
+    }
+
+    // Create a stable string representation to compare
+    const dataString = JSON.stringify(data);
+
+    // Only process if data has actually changed
+    if (prevDataRef.current === dataString) {
+      return;
+    }
+
+    prevDataRef.current = dataString;
 
     const now = new Date();
     const todayStart = startOfDay(now);
@@ -63,25 +78,6 @@ export function useParsedChartData(data: Session[]) {
           (buckets.lastYear[key] || 0) + session.duration_seconds;
       }
     }
-
-    setChartData({
-      today: Object.entries(buckets.today).map(([date, seconds]) => ({
-        date,
-        duration: seconds,
-      })),
-      lastWeek: Object.entries(buckets.lastWeek).map(([date, seconds]) => ({
-        date,
-        duration: seconds,
-      })),
-      lastMonth: Object.entries(buckets.lastMonth).map(([date, seconds]) => ({
-        date,
-        duration: seconds,
-      })),
-      lastYear: Object.entries(buckets.lastYear).map(([date, seconds]) => ({
-        date,
-        duration: seconds,
-      })),
-    });
 
     const createChartPoints = (
       bucket: Record<string, number>,
