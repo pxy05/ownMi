@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useAuth } from "./auth-context";
 import { createClient } from "./supabase/client";
 import useSWR, { mutate } from "swr";
@@ -24,6 +30,7 @@ export interface AppUser {
 }
 
 export interface FocusSession {
+  session_type: ReactNode;
   id: string;
   user_id: string;
   start_time: string;
