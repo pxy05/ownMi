@@ -65,6 +65,16 @@ import {
 } from "date-fns";
 import ChartAreaGradient from "@/components/ui-support/focus-chart";
 import { useAppUser } from "@/lib/app-user-context";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import FocusHeatChart from "@/components/ui/focus-heatchart";
 
 interface FocusSession {
   id: string;
@@ -223,6 +233,15 @@ const FocusSessionsPage = () => {
     });
   }, [focusSessions, filters]);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const sessionsPerPage = 25;
+  const totalPages = Math.ceil(filteredSessions.length / sessionsPerPage);
+  const paginatedSessions = filteredSessions.slice(
+    (currentPage - 1) * sessionsPerPage,
+    currentPage * sessionsPerPage
+  );
+
   // Helper functions
   const formatDuration = (seconds: number | null) => {
     if (!seconds) return "0m";
@@ -314,6 +333,7 @@ const FocusSessionsPage = () => {
       endDate: undefined,
       manuallyAdded: "all",
     });
+    setCurrentPage(1);
   };
 
   // Update edit form when editing session changes
@@ -594,7 +614,7 @@ const FocusSessionsPage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredSessions.map((session) => (
+                    {paginatedSessions.map((session) => (
                       <TableRow
                         key={session.id}
                         className={`transition-all duration-500 ${
@@ -657,9 +677,54 @@ const FocusSessionsPage = () => {
                         </TableCell>
                       </TableRow>
                     ))}
+                    {/* Pagination Controls - below the table */}
                   </TableBody>
                 </Table>
               </div>
+              {totalPages > 1 && (
+                <Pagination className="mt-4">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentPage((prev) => Math.max(prev - 1, 1));
+                        }}
+                        isActive={false}
+                      />
+                    </PaginationItem>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (page) => (
+                        <PaginationItem key={page}>
+                          <PaginationLink
+                            href="#"
+                            isActive={page === currentPage}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setCurrentPage(page);
+                            }}
+                          >
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      )
+                    )}
+                    <PaginationItem>
+                      <PaginationNext
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentPage((prev) =>
+                            Math.min(prev + 1, totalPages)
+                          );
+                        }}
+                        isActive={false}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -672,13 +737,14 @@ const FocusSessionsPage = () => {
                 Visualize your focus session patterns and progress
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex gap-8">
               <ChartAreaGradient
                 userId={String(appUser?.id)}
                 theme="system"
                 mini={false}
                 reset={0}
               />
+              <FocusHeatChart />
             </CardContent>
           </Card>
         </TabsContent>
