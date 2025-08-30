@@ -74,6 +74,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import FocusHeatChart from "@/components/ui/focus-heatchart";
 
 interface FocusSession {
   id: string;
@@ -736,13 +737,14 @@ const FocusSessionsPage = () => {
                 Visualize your focus session patterns and progress
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex gap-8">
               <ChartAreaGradient
                 userId={String(appUser?.id)}
                 theme="system"
                 mini={false}
                 reset={0}
               />
+              <FocusHeatChart />
             </CardContent>
           </Card>
         </TabsContent>
