@@ -740,7 +740,6 @@ const FocusSessionsPage = () => {
             <CardContent className="flex gap-8">
               <ChartAreaGradient
                 userId={String(appUser?.id)}
-                theme="system"
                 mini={false}
                 reset={0}
               />

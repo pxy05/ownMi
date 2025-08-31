@@ -1,16 +1,27 @@
 import React from "react";
-import { ActivityCalendar } from "react-activity-calendar";
+import ActivityCalendar from "react-activity-calendar";
 import { useAppUser, FocusSession } from "@/lib/app-user-context";
-import { parse } from "path";
+import { get } from "http";
 
 type HeatMapDay = {
   date: string;
-  count: number;
+  count_seconds: number; // actual total seconds
+  count: number; // in hours please lads using floor
   level: number;
 };
 
 const FocusHeatChart = () => {
   let heatMapDays: Map<string, HeatMapDay> = new Map();
+
+  function getLevel(seconds: number): number {
+    const hours = Math.floor(seconds / 3600);
+    if (hours <= 0) return 0;
+    if (hours <= 1) return 1;
+    if (hours <= 3) return 2;
+    if (hours <= 5) return 3;
+    if (hours > 6) return 4;
+    return 0;
+  }
 
   function parseHeatMapData(sessions: FocusSession[]): void {
     for (var session of sessions) {
@@ -21,6 +32,7 @@ const FocusHeatChart = () => {
       ) {
         continue;
       }
+
       const date = new Date(session.start_time);
       const formatted =
         date.getFullYear() +
@@ -32,28 +44,18 @@ const FocusHeatChart = () => {
       if (heatMapDays.has(formatted)) {
         const existing = heatMapDays.get(formatted);
         if (existing) {
-          existing.count += session.duration_seconds;
-          if (existing.count / 3600 <= 0) {
-            existing.level = 0;
-          } else if (existing.count / 3600 > 0 && existing.count / 3600 <= 1) {
-            existing.level = 1;
-          } else if (existing.count / 3600 > 1 && existing.count / 3600 <= 3) {
-            existing.level = 2;
-          } else if (existing.count / 3600 > 3 && existing.count / 3600 <= 5) {
-            existing.level = 3;
-          } else if (existing.count / 3600 > 6) {
-            existing.level = 4;
-          } else {
-            existing.level = 0;
-          }
+          existing.count_seconds += session.duration_seconds;
+          existing.count += Math.floor(existing.count_seconds / 3600);
+          existing.level = getLevel(existing.count_seconds);
 
           heatMapDays.set(formatted, existing);
         }
       } else {
         heatMapDays.set(formatted, {
           date: formatted,
-          count: session.duration_seconds,
-          level: Math.min(4, Math.floor(session.duration_seconds / 60)), // 1 level per hour, max 4
+          count_seconds: session.duration_seconds,
+          count: Math.floor(session.duration_seconds / 3600),
+          level: getLevel(Math.floor(session.duration_seconds / 3600)),
         });
       }
     }

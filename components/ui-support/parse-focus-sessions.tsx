@@ -1,10 +1,6 @@
 import { startOfDay, subDays, isAfter, format, startOfHour } from "date-fns";
-import { useState, useEffect, useRef } from "react";
-
-interface Session {
-  start_time: string;
-  duration_seconds: number;
-}
+import { useState, useEffect, useRef, useMemo } from "react";
+import { FocusSession } from "@/lib/app-user-context";
 
 interface ChartPoint {
   date: string;
@@ -12,7 +8,7 @@ interface ChartPoint {
   timeLabel?: string;
 }
 
-export function useParsedChartData(data: Session[]) {
+export function useParsedChartData(data: FocusSession[] | null) {
   const [chartData, setChartData] = useState<{
     today: ChartPoint[];
     lastWeek: ChartPoint[];
@@ -21,6 +17,8 @@ export function useParsedChartData(data: Session[]) {
   }>({ today: [], lastWeek: [], lastMonth: [], lastYear: [] });
 
   const prevDataRef = useRef<string>("");
+
+  const sessionHash = useMemo(() => JSON.stringify(data), [data]);
 
   useEffect(() => {
     if (!data || data.length === 0) {
@@ -128,7 +126,7 @@ export function useParsedChartData(data: Session[]) {
       lastMonth: createChartPoints(buckets.lastMonth),
       lastYear: createChartPoints(buckets.lastYear),
     });
-  }, [data]);
+  }, [sessionHash]);
 
   return chartData;
 }
