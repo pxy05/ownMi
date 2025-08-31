@@ -51,7 +51,6 @@ const Sidebar: React.FC<SidebarProps> = ({
             <div className="hover:shadow-lg duration-200 rounded-lg bg-none">
               <ChartAreaGradient
                 userId={String(user?.id ?? "")}
-                theme={String(theme)}
                 mini={true}
                 reset={reset}
               />

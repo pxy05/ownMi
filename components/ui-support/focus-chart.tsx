@@ -23,7 +23,6 @@ import {
 
 import { useParsedChartData } from "./parse-focus-sessions";
 import { useAppUser } from "@/lib/app-user-context";
-import { useTheme } from "next-themes";
 
 export const description = "An area chart with gradient fill";
 
@@ -46,7 +45,6 @@ const focusChart = ({
   reset: number;
 }) => {
   const [timeRange, setTimeRange] = useState<TimeRange>("today");
-  const { theme } = useTheme();
 
   // Use the context instead of direct SWR
   const {
@@ -71,16 +69,8 @@ const focusChart = ({
   const parsedData = useMemo(() => focusSessions, [focusSessions]);
   const chartData = useParsedChartData(parsedData);
 
-  var textColor = "text-gray-700";
-  var bgColor = "bg-white";
-
-  if (theme === "dark") {
-    textColor = "text-foreground";
-    bgColor = "bg-background";
-  } else if (theme === "light") {
-    textColor = "text-foreground";
-    bgColor = "bg-background";
-  }
+  const textColor = "text-foreground";
+  const bgColor = "bg-background";
 
   const currentData = chartData[timeRange];
 
