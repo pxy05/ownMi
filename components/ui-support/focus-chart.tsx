@@ -3,7 +3,7 @@
 import { TrendingUp } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import React from "react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { format } from "date-fns";
 
 import {
@@ -68,7 +68,8 @@ const focusChart = ({
       duration_seconds: session.duration_seconds,
     })) || [];
 
-  const chartData = useParsedChartData(rawData);
+  const parsedData = useMemo(() => focusSessions, [focusSessions]);
+  const chartData = useParsedChartData(parsedData);
 
   var textColor = "text-gray-700";
   var bgColor = "bg-white";
