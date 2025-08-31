@@ -23,6 +23,7 @@ import {
 
 import { useParsedChartData } from "./parse-focus-sessions";
 import { useAppUser } from "@/lib/app-user-context";
+import { useTheme } from "next-themes";
 
 export const description = "An area chart with gradient fill";
 
@@ -37,16 +38,15 @@ type TimeRange = "today" | "lastWeek" | "lastMonth" | "lastYear";
 
 const focusChart = ({
   userId,
-  theme,
   mini,
   reset,
 }: {
   userId: string;
-  theme: string;
   mini: boolean;
   reset: number;
 }) => {
   const [timeRange, setTimeRange] = useState<TimeRange>("today");
+  const { theme } = useTheme();
 
   // Use the context instead of direct SWR
   const {
