@@ -37,8 +37,8 @@ export interface FocusSession {
   end_time: string;
   duration_seconds: number;
   manually_added: boolean;
-  created_at?: string;
-  updated_at?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface AppUserContextType {

@@ -119,9 +119,7 @@ const FocusSessionsPage = () => {
     manuallyAdded: "all",
   });
 
-  const [editingSession, setEditingSession] = useState<FocusSession | null>(
-    null
-  );
+  const [editingSession, setEditingSession] = useState<any>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [newSession, setNewSession] = useState({
