@@ -12,7 +12,7 @@ const WS_URL = process.env.NEXT_PUBLIC_WS_URL;
 
 const page = () => {
   const { theme } = useTheme();
-  const [zenMode, setZenMode] = useState(false);
+  const [zenMode, setZenMode] = useState(true);
   const [colorMode, setColorMode] = useState("green");
   const colours: Record<string, string> = {
     purple: "#5B00C0",
@@ -260,19 +260,17 @@ const page = () => {
             }
           />
           <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900/60 to-black" />
-          <Card className="text-center w-full max-w-md relative z-10 bg-black/40 backdrop-blur-sm border-black text-gray-500/70">
-            <CardHeader>
-              <CardTitle>Time Tracker</CardTitle>
-            </CardHeader>
+          <Card className="text-center w-full max-w-md relative z-10 bg-background/20  backdrop-blur-3xl border-none text-gray-500/70">
+            <CardHeader></CardHeader>
             <CardContent>
-              <div className="mb-4 text-4xl font-mono ">
+              <div className="mb-4 text-4xl font-mono">
                 {finalTime !== null
                   ? formatClock(finalTime)
                   : formatClock(clock)}
               </div>
               <div className="flex gap-2 justify-center">
                 <Button
-                  className="bg-white/80 hover:bg-white/60"
+                  className="bg-white/40 hover:bg-white/60"
                   onClick={handleStart}
                   disabled={timerActive || !socketConnected}
                 >
