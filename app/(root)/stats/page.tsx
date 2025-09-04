@@ -375,7 +375,7 @@ const FocusSessionsPage = () => {
               Add Session
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="bg-background/60 backdrop-blur-sm">
             <DialogHeader>
               <DialogTitle>Add Manual Focus Session</DialogTitle>
               <DialogDescription>
@@ -736,12 +736,14 @@ const FocusSessionsPage = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex gap-8">
-              <ChartAreaGradient
-                userId={String(appUser?.id)}
-                mini={false}
-                reset={0}
-              />
-              <FocusHeatChart />
+              <div className="flex flex-col md:flex-row gap-4">
+                <ChartAreaGradient
+                  userId={String(appUser?.id)}
+                  mini={false}
+                  reset={0}
+                />
+                <FocusHeatChart />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
