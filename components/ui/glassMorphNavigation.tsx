@@ -138,6 +138,16 @@ export default function GlassmorphNavbar() {
               <ModeToggle />
             </div>
           )}
+          {!user && (
+            <div className="flex flex-col items-center gap-2 w-full">
+              <Button className="hover:text-primary-foreground text-secondary bg-foreground">
+                <Link href="/auth/login" className="">
+                  Sign In
+                </Link>
+              </Button>
+              <ModeToggle />
+            </div>
+          )}
         </div>
       )}
     </nav>
