@@ -18,7 +18,7 @@ const LandingWithUser = () => {
       </div>
 
       <div className="flex items-center gap-4 w-full h-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+        <div className="md:grid-cols-2 gap-4 w-full flex ">
           <FocusCard />
           <FinanceCard />
           <CareerCard />

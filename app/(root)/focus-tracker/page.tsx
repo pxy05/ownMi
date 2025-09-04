@@ -259,7 +259,18 @@ const page = () => {
               } as React.CSSProperties
             }
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900/60 to-black" />
+          <div
+            className="absolute inset-0"
+            style={
+              {
+                "--color-primary": colours[colorMode],
+                background:
+                  theme === "dark"
+                    ? `linear-gradient(#000000,var(--color-primary), #000000)`
+                    : `linear-gradient(#4b5563,var(--color-primary), #6b7280)`,
+              } as React.CSSProperties
+            }
+          />
           <Card className="text-center w-full max-w-md relative z-10 bg-background/20  backdrop-blur-3xl border-none text-gray-500/70">
             <CardHeader></CardHeader>
             <CardContent>

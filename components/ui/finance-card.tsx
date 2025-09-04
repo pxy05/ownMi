@@ -4,8 +4,8 @@ import Link from "next/link";
 
 const FinanceCard = () => {
   return (
-    <Link href="/finance" className="w-full">
-      <Card>
+    <Link href="/finance" className="flex-1">
+      <Card className="bg-card/60 backdrop-blur-3xl">
         <CardHeader>
           <CardTitle>Enter Finance Mode</CardTitle>
         </CardHeader>
