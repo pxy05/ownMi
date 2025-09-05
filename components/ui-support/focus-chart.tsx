@@ -35,8 +35,18 @@ const chartConfig = {
 
 type TimeRange = "today" | "lastWeek" | "lastMonth" | "lastYear";
 
-const focusChart = ({ mini = false }: { mini: boolean }) => {
+const focusChart = ({
+  mini = false,
+  span = null,
+}: {
+  mini: boolean;
+  span?: TimeRange | null;
+}) => {
   const [timeRange, setTimeRange] = useState<TimeRange>("today");
+  if (span) {
+    // If a span is provided, use it
+    setTimeRange(span);
+  }
 
   // Use the context instead of direct SWR
   const {
