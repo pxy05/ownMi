@@ -67,7 +67,11 @@ const FocusHeatChart = () => {
 
   const parsedFocusSessions = Array.from(heatMapDays.values());
 
-  return <ActivityCalendar data={parsedFocusSessions} />;
+  return (
+    <div className="flex-1">
+      <ActivityCalendar data={parsedFocusSessions} />
+    </div>
+  );
 };
 
 export default FocusHeatChart;

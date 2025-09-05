@@ -11,11 +11,17 @@ import Link from "next/link";
 
 const CareerCard = () => {
   return (
-    <Link href="/career" className="flex-1">
+    <Link href="/career" className="">
       <Card className="bg-card/60 backdrop-blur-3xl">
         <CardHeader>
-          <CardTitle>Enter Career Mode</CardTitle>
+          <CardTitle>Career</CardTitle>
         </CardHeader>
+
+        <CardContent>
+          <CardDescription>
+            Explore various career paths and find the right fit for you.
+          </CardDescription>
+        </CardContent>
       </Card>
     </Link>
   );

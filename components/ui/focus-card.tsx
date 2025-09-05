@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const FocusCard = () => {
   return (
-    <Link href="/focus-tracker" className="flex-1">
+    <Link href="/focus-tracker" className="">
       <Card className="bg-card/60 backdrop-blur-3xl">
         <CardHeader>
           <CardTitle>Enter Focus Mode</CardTitle>

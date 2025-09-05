@@ -1,6 +1,6 @@
 import React from "react";
 import FocusCard from "@/components/ui/focus-card";
-import FinanceCard from "@/components/ui/finance-card";
+import StatisticsCard from "@/components/ui/statistics-card";
 import CareerCard from "@/components/ui/career-card";
 import { useAppUser } from "@/lib/app-user-context";
 
@@ -18,9 +18,9 @@ const LandingWithUser = () => {
       </div>
 
       <div className="flex items-center gap-4 w-full h-full">
-        <div className="md:grid-cols-2 gap-4 w-full flex ">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
           <FocusCard />
-          <FinanceCard />
+          <StatisticsCard />
           <CareerCard />
         </div>
       </div>
