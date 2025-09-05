@@ -35,15 +35,7 @@ const chartConfig = {
 
 type TimeRange = "today" | "lastWeek" | "lastMonth" | "lastYear";
 
-const focusChart = ({
-  userId,
-  mini,
-  reset,
-}: {
-  userId: string;
-  mini: boolean;
-  reset: number;
-}) => {
+const focusChart = ({ mini = false }: { mini: boolean }) => {
   const [timeRange, setTimeRange] = useState<TimeRange>("today");
 
   // Use the context instead of direct SWR
@@ -143,36 +135,39 @@ const focusChart = ({
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex gap-2">
-        {(["today", "lastWeek", "lastMonth", "lastYear"] as TimeRange[]).map(
-          (range) => (
-            <button
-              key={range}
-              onClick={() => setTimeRange(range)}
-              className={`px-4 py-1 rounded-lg transition-colors font-medium text-sm ${
-                timeRange === range
-                  ? `${bgColor} ${textColor} shadow border-1`
-                  : `${bgColor} text-gray-700 hover:bg-gray-200`
-              }`}
-            >
-              {range === "today"
-                ? "Today"
-                : range === "lastWeek"
-                ? "Last Week"
-                : range === "lastMonth"
-                ? "Last Month"
-                : "Last Year"}
-            </button>
-          )
-        )}
-        {/* Add refresh button */}
-        <button
-          onClick={refreshFocusSessions}
-          className={`px-4 py-1 rounded-lg transition-colors font-medium text-sm ${bgColor} text-gray-700 hover:bg-gray-200`}
-        >
-          Refresh
-        </button>
+    <div className="flex-1">
+      <div className="overflow-x-auto">
+        <div className="flex gap-2 whitespace-nowrap pb-2">
+          {(["today", "lastWeek", "lastMonth", "lastYear"] as TimeRange[]).map(
+            (range) => (
+              <button
+                key={range}
+                onClick={() => setTimeRange(range)}
+                className={`px-4 py-1 rounded-lg transition-colors font-medium text-sm ${
+                  timeRange === range
+                    ? `${bgColor} ${textColor} shadow border-1`
+                    : `${bgColor} text-gray-700 hover:bg-gray-200`
+                }`}
+              >
+                {range === "today"
+                  ? "Today"
+                  : range === "lastWeek"
+                  ? "Last Week"
+                  : range === "lastMonth"
+                  ? "Last Month"
+                  : "Last Year"}
+              </button>
+            )
+          )}
+
+          {/* Refresh button also inside scroll */}
+          <button
+            onClick={refreshFocusSessions}
+            className={`px-4 py-1 rounded-lg transition-colors font-medium text-sm ${bgColor} text-gray-700 hover:bg-gray-200`}
+          >
+            Refresh
+          </button>
+        </div>
       </div>
 
       {!currentData || currentData.length === 0 ? (
