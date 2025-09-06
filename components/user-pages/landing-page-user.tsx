@@ -10,11 +10,9 @@ const LandingWithUser = () => {
   return (
     <div>
       <div className="text-center w-full mb-16">
-        <h1 className="font-[800] mb-10 pb-4 text-4xl inline-block text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 dark:from-primary dark:via-blue-400 dark:to-primary">
-          Welcome back, {appUser?.username}
+        <h1 className="font-[800] text-4xl inline-block text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 dark:from-primary dark:via-blue-400 dark:to-primary">
+          Welcome back, {appUser?.username}!
         </h1>
-
-        <h2 className="font-bold text-2xl mt-8 text-primary">Example Usage</h2>
       </div>
 
       <div className="flex items-center gap-4 w-full h-full">
