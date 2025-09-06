@@ -91,10 +91,8 @@ export default function GlassmorphNavbar() {
                 </Button>
               </div>
             ) : (
-              <Button className="hover:text-primary-foreground bg-transparent text-primary">
-                <Link href="/auth/login" className="">
-                  Sign In
-                </Link>
+              <Button className="hover:text-primary-foreground bg-foreground">
+                <Link href="/auth/login">Sign In</Link>
               </Button>
             )}
             <ModeToggle />
@@ -103,8 +101,13 @@ export default function GlassmorphNavbar() {
           </div>
         </div>
 
-        <div className="md:hidden">
-          <Button onClick={() => setIsOpen(!isOpen)}>
+        <div className="md:hidden flex">
+          <Button className="hover:text-primary-foreground text-secondary bg-foreground mr-2 flex-1">
+            <Link href="/auth/login" className="">
+              Sign In
+            </Link>
+          </Button>
+          <Button onClick={() => setIsOpen(!isOpen)} className="flex-1">
             <Menu className="size-4" />
           </Button>
         </div>

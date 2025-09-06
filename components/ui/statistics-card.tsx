@@ -27,7 +27,7 @@ const FinanceCard = () => {
   const isMobile = useIsMobile();
 
   return (
-    <Link href="/finance" className="">
+    <Link href="/stats" className="">
       <Card className="bg-card/60 backdrop-blur-3xl">
         <CardHeader>
           <CardTitle>Statistics</CardTitle>

@@ -3,7 +3,7 @@
 import { TrendingUp } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import React from "react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { format } from "date-fns";
 
 import {
@@ -35,18 +35,21 @@ const chartConfig = {
 
 type TimeRange = "today" | "lastWeek" | "lastMonth" | "lastYear";
 
-const focusChart = ({
+const FocusChart = ({
   mini = false,
   span = null,
 }: {
   mini: boolean;
   span?: TimeRange | null;
 }) => {
-  const [timeRange, setTimeRange] = useState<TimeRange>("today");
-  if (span) {
-    // If a span is provided, use it
-    setTimeRange(span);
-  }
+  const [timeRange, setTimeRange] = useState<TimeRange>(span || "today");
+
+  // Use useEffect to handle span changes properly
+  useEffect(() => {
+    if (span) {
+      setTimeRange(span);
+    }
+  }, [span]);
 
   // Use the context instead of direct SWR
   const {
@@ -278,4 +281,4 @@ const focusChart = ({
   );
 };
 
-export default focusChart;
+export default FocusChart;
