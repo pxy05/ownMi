@@ -742,9 +742,7 @@ const FocusSessionsPage = () => {
             <CardContent className="flex gap-8">
               <div className="flex flex-col md:flex-row gap-4">
                 <ChartAreaGradient
-                  userId={String(appUser?.id)}
                   mini={false}
-                  reset={0}
                 />
                 <FocusHeatChart />
               </div>
