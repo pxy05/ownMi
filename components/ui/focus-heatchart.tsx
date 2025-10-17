@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import ActivityCalendar from "react-activity-calendar";
-import { useAppUser, FocusSession } from "@/lib/app-user-context";
+import { useAppUser } from "@/lib/app-user-context";
 
 type HeatMapDay = {
   date: string;
@@ -11,7 +11,8 @@ type HeatMapDay = {
   level: number;
 };
 
-const FocusHeatChart = () => {
+const FocusHeatChart = ( props: { margin?: number, blockSize?: number} ) => {
+  const { margin = 3, blockSize = 12 } = props;
   const { focusSessions } = useAppUser();
 
   function getLevel(seconds: number): number {
@@ -86,7 +87,7 @@ const FocusHeatChart = () => {
 
   return (
     <div className="flex-1">
-      <ActivityCalendar data={parsedFocusSessions} />
+      <ActivityCalendar blockSize={blockSize} blockMargin={margin} data={parsedFocusSessions} />
     </div>
   );
 };

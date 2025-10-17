@@ -74,6 +74,11 @@ interface AppUserContextType {
     sessionId: string
   ) => Promise<{ success: boolean; error?: string }>;
   refreshFocusSessions: () => Promise<void>;
+
+  // Average focus time statistics in seconds plz
+  averageFocusTimePerDay: number;
+  averageFocusTimePerWeek: number;
+  averageFocusTimePerMonth: number;
 }
 
 const AppUserContext = createContext<AppUserContextType | undefined>(undefined);
@@ -418,6 +423,64 @@ export function AppUserProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Calculate average focus time statistics
+  const calculateAverageFocusTime = () => {
+    if (!focusSessions || focusSessions.length === 0) {
+      return {
+        averageFocusTimePerDay: 0,
+        averageFocusTimePerWeek: 0,
+        averageFocusTimePerMonth: 0,
+      };
+    }
+
+    const dayMap = new Map<string, number>();
+    const weekMap = new Map<string, number>();
+    const monthMap = new Map<string, number>();
+
+    focusSessions.forEach((session) => {
+      const startDate = new Date(session.start_time);
+      
+      // Day key: YYYY-MM-DD
+      const dayKey = startDate.toISOString().split("T")[0];
+      dayMap.set(dayKey, (dayMap.get(dayKey) || 0) + session.duration_seconds);
+
+      // Week key: YYYY-Www
+      const weekYear = startDate.getFullYear();
+      const weekNum = getISOWeek(startDate);
+      const weekKey = `${weekYear}-W${weekNum.toString().padStart(2, "0")}`;
+      weekMap.set(weekKey, (weekMap.get(weekKey) || 0) + session.duration_seconds);
+
+      // Month key: YYYY-MM
+      const monthKey = `${startDate.getFullYear()}-${(startDate.getMonth() + 1).toString().padStart(2, "0")}`;
+      monthMap.set(monthKey, (monthMap.get(monthKey) || 0) + session.duration_seconds);
+    });
+
+    // Calculate averages
+    const totalDays = dayMap.size;
+    const totalWeeks = weekMap.size;
+    const totalMonths = monthMap.size;
+
+    const totalDurationPerDay = Array.from(dayMap.values()).reduce((sum, val) => sum + val, 0);
+    const totalDurationPerWeek = Array.from(weekMap.values()).reduce((sum, val) => sum + val, 0);
+    const totalDurationPerMonth = Array.from(monthMap.values()).reduce((sum, val) => sum + val, 0);
+
+    return {
+      averageFocusTimePerDay: totalDays > 0 ? totalDurationPerDay / totalDays : 0,
+      averageFocusTimePerWeek: totalWeeks > 0 ? totalDurationPerWeek / totalWeeks : 0,
+      averageFocusTimePerMonth: totalMonths > 0 ? totalDurationPerMonth / totalMonths : 0,
+    };
+  };
+
+  const getISOWeek = (date: Date): number => {
+    const tempDate = new Date(date.getTime());
+    tempDate.setHours(0, 0, 0, 0);
+    tempDate.setDate(tempDate.getDate() + 3 - ((tempDate.getDay() + 6) % 7));
+    const week1 = new Date(tempDate.getFullYear(), 0, 4);
+    return 1 + Math.round(((tempDate.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+  };
+
+  const { averageFocusTimePerDay, averageFocusTimePerWeek, averageFocusTimePerMonth } = calculateAverageFocusTime();
+
   useEffect(() => {
     if (!authLoading) {
       fetchUser();
@@ -452,6 +515,10 @@ export function AppUserProvider({ children }: { children: React.ReactNode }) {
         editFocusSession,
         deleteFocusSession,
         refreshFocusSessions,
+
+        averageFocusTimePerDay,
+        averageFocusTimePerWeek,
+        averageFocusTimePerMonth,
       }}
     >
       {children}

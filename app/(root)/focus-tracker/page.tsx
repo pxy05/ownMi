@@ -1,68 +1,72 @@
 "use client";
+
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
+import { useTheme } from "next-themes";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Sidebar from "@/components/ui/sidebar";
-import { useTheme } from "next-themes";
+import { useAppUser } from "@/lib/app-user-context";
+import { formatDuration } from "@/lib/utils";
 
 const log = false; // Set to true for debugging
-
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL;
 
-const page = () => {
-  const { theme } = useTheme();
-  const [zenMode, setZenMode] = useState(true);
-  const [colorMode, setColorMode] = useState("green");
-  const colours: Record<string, string> = {
-    purple: "#5B00C0",
-    green: "#4ade80",
-    blue: "#3b82f6",
-    red: "#ef4444",
-    orange: "#f97316",
-  };
+// Color theme configurations
+const COLOR_THEMES: Record<string, string> = {
+  purple: "#5B00C0",
+  green: "#4ade80",
+  blue: "#3b82f6",
+  red: "#ef4444",
+  orange: "#f97316",
+};
 
-  // websocket logic -------------
+const FocusTrackerPage = () => {
+  const { user, session } = useAuth();
+  const { theme } = useTheme();
+  const { averageFocusTimePerDay, averageFocusTimePerWeek, averageFocusTimePerMonth } = useAppUser();
+
+  // UI state
+  const [zenMode, setZenMode] = useState(false);
+  const [colorMode, setColorMode] = useState("green");
+  const [sidebarKey, setSidebarKey] = useState(0);
+
+  // WebSocket state
   const [socketConnected, setSocketConnected] = useState(false);
   const [sessionConnected, setSessionConnected] = useState(false);
-  const sessionConnectedRef = useRef(false);
   const [sessionStarted, setSessionStarted] = useState(false);
   const [sessionEnded, setSessionEnded] = useState(false);
-
+  const sessionConnectedRef = useRef(false);
   const wsRef = useRef<WebSocket | null>(null);
-  const ws = wsRef.current;
-  // user logic -----------------
-  const { user, session } = useAuth();
-  const token = session?.access_token || "";
-  // timer logic -----------------
+
+  // Timer state
   const [timerActive, setTimerActive] = useState(false);
   const [clock, setClock] = useState(0);
   const [finalTime, setFinalTime] = useState<number | null>(null);
   const [cleared, setCleared] = useState(true);
   const clockInterval = useRef<NodeJS.Timeout | null>(null);
 
-  // refresh sidebar logic -------
-  const [sidebarKey, setSidebarKey] = useState(0);
+  // Auth token
+  const token = session?.access_token || "";
 
-  const handleEndSession = () => {
-    // ...existing end session logic...
-    setSidebarKey((prev) => prev + 1); // Increment to force Sidebar re-mount
+  // Helper functions
+  const formatClock = (seconds: number) => {
+    const m = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
   };
 
-  // Timer effect
-  useEffect(() => {
-    if (timerActive) {
-      clockInterval.current = setInterval(() => {
-        setClock((prev) => prev + 1);
-      }, 1000);
-    } else {
-      if (clockInterval.current) clearInterval(clockInterval.current);
-    }
-    return () => {
-      if (clockInterval.current) clearInterval(clockInterval.current);
-    };
-  }, [timerActive]);
+  const cycleColorMode = () => {
+    setColorMode((current) => {
+      const colors = ["purple", "green", "blue", "red", "orange"];
+      const currentIndex = colors.indexOf(current);
+      return colors[(currentIndex + 1) % colors.length];
+    });
+  };
 
+  // Timer handlers
   const handleStart = () => {
     // If not cleared, clear the timer before starting
     if (!cleared) {
@@ -91,17 +95,23 @@ const page = () => {
     setCleared(true);
   };
 
-  const formatClock = (seconds: number) => {
-    const m = Math.floor(seconds / 60)
-      .toString()
-      .padStart(2, "0");
-    const s = (seconds % 60).toString().padStart(2, "0");
-    return `${m}:${s}`;
-  };
-
+  // Effects
   useEffect(() => {
     sessionConnectedRef.current = sessionConnected;
   }, [sessionConnected]);
+
+  useEffect(() => {
+    if (timerActive) {
+      clockInterval.current = setInterval(() => {
+        setClock((prev) => prev + 1);
+      }, 1000);
+    } else {
+      if (clockInterval.current) clearInterval(clockInterval.current);
+    }
+    return () => {
+      if (clockInterval.current) clearInterval(clockInterval.current);
+    };
+  }, [timerActive]);
 
   useEffect(() => {
     if (!token) return;
@@ -197,87 +207,122 @@ const page = () => {
     };
   }, [token]);
 
+  // Render time tracker card
+  const renderTimeTracker = () => (
+    <Card className="text-center w-full max-w-md">
+      <CardHeader>Time Tracker</CardHeader>
+      <CardContent>
+        <div className="mb-4 text-4xl font-mono">
+          {finalTime !== null ? formatClock(finalTime) : formatClock(clock)}
+        </div>
+        <div className="flex gap-2 justify-center">
+          <Button
+            onClick={handleStart}
+            disabled={timerActive || !socketConnected}
+          >
+            Start
+          </Button>
+          <Button
+            onClick={handleEnd}
+            disabled={!timerActive || !socketConnected}
+            variant="outline"
+          >
+            End
+          </Button>
+          <Button
+            onClick={handleClear}
+            disabled={timerActive}
+            variant="secondary"
+          >
+            Clear
+          </Button>
+        </div>
+        {finalTime !== null && (
+          <div className="mt-2 text-sm text-gray-500">
+            Final time: {formatClock(finalTime)}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+
+  // Render zen mode background
+  const renderZenBackground = () => (
+    <>
+      <div
+        className="absolute inset-0 w-[200vmax] h-[200vmax] -top-[50vmax] -left-[50vmax] animate-spin"
+        style={
+          {
+            "--color-primary": COLOR_THEMES[colorMode],
+            background: `linear-gradient(#4b5563,var(--color-primary), #6b7280)`,
+            animationDuration: "10s",
+            animationTimingFunction: "cubic-bezier(0.4, 0, 0.2, 0.5)",
+          } as React.CSSProperties
+        }
+      />
+      <div
+        className="absolute inset-0"
+        style={
+          {
+            "--color-primary": COLOR_THEMES[colorMode],
+            background:
+              theme === "dark"
+                ? `linear-gradient(#000000,var(--color-primary), #000000)`
+                : `linear-gradient(#4b5563,var(--color-primary), #6b7280)`,
+          } as React.CSSProperties
+        }
+      />
+    </>
+  );
+
+  // Render control buttons
+  const renderControls = () => (
+    <div className="fixed bottom-4 right-4 z-50 grid-cols-2 text-sm">
+      <Button
+        className="z-50 opacity-60 hover:opacity-100 hover:text-xl transition-all"
+        variant="ghost"
+        onClick={cycleColorMode}
+      >
+        colour
+      </Button>
+      <Button
+        className="z-50 opacity-60 hover:opacity-100 hover:text-xl transition-all"
+        variant="ghost"
+        onClick={() => setZenMode(!zenMode)}
+      >
+        {zenMode ? "leave zen" : "zen"}
+      </Button>
+    </div>
+  );
+
   return (
-    <div className="flex flex-col items-center gap-8 mt-8">
+    <div className="-m-8 sm:-m-20">
       {!zenMode && (
         <>
           <Sidebar
             key={sidebarKey}
-            items={["Stat 1", "Stat 2", "Stat 3"]}
+            items={[
+              `Focus Time Per Day: ${formatDuration(averageFocusTimePerDay)}`,
+              `Focus Time Per Week: ${formatDuration(averageFocusTimePerWeek)}`,
+              `Focus Time Per Month: ${formatDuration(averageFocusTimePerMonth)}`
+            ]}
             theme={String(theme)}
             reset={sidebarKey}
           />
-          <Card className="text-center w-full max-w-md">
-            <CardHeader>Time Tracker</CardHeader>
-            <CardContent>
-              <div className="mb-4 text-4xl font-mono">
-                {finalTime !== null
-                  ? formatClock(finalTime)
-                  : formatClock(clock)}
-              </div>
-              <div className="flex gap-2 justify-center">
-                <Button
-                  onClick={handleStart}
-                  disabled={timerActive || !socketConnected}
-                >
-                  Start
-                </Button>
-                <Button
-                  onClick={handleEnd}
-                  disabled={!timerActive || !socketConnected}
-                  variant="outline"
-                >
-                  End
-                </Button>
-                <Button
-                  onClick={handleClear}
-                  disabled={timerActive}
-                  variant="secondary"
-                >
-                  Clear
-                </Button>
-              </div>
-              {finalTime !== null && (
-                <div className="mt-2 text-sm text-gray-500">
-                  Final time: {formatClock(finalTime)}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <div className="flex items-center justify-center h-screen px-8">
+            {renderTimeTracker()}
+          </div>
         </>
       )}
+
       {zenMode && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div
-            className="absolute inset-0 w-[200vmax] h-[200vmax] -top-[50vmax] -left-[50vmax] animate-spin"
-            style={
-              {
-                "--color-primary": colours[colorMode],
-                background: `linear-gradient(#4b5563,var(--color-primary), #6b7280)`,
-                animationDuration: "10s",
-                animationTimingFunction: "cubic-bezier(0.4, 0, 0.2, 0.5)",
-              } as React.CSSProperties
-            }
-          />
-          <div
-            className="absolute inset-0"
-            style={
-              {
-                "--color-primary": colours[colorMode],
-                background:
-                  theme === "dark"
-                    ? `linear-gradient(#000000,var(--color-primary), #000000)`
-                    : `linear-gradient(#4b5563,var(--color-primary), #6b7280)`,
-              } as React.CSSProperties
-            }
-          />
-          <Card className="text-center w-full max-w-md relative z-10 bg-background/20  backdrop-blur-3xl border-none text-gray-500/70">
+          {renderZenBackground()}
+          <Card className="text-center w-full max-w-md relative z-10 bg-background/20 backdrop-blur-3xl border-none text-gray-500/70">
             <CardHeader></CardHeader>
             <CardContent>
               <div className="mb-4 text-4xl font-mono">
-                {finalTime !== null
-                  ? formatClock(finalTime)
-                  : formatClock(clock)}
+                {finalTime !== null ? formatClock(finalTime) : formatClock(clock)}
               </div>
               <div className="flex gap-2 justify-center">
                 <Button
@@ -313,36 +358,9 @@ const page = () => {
         </div>
       )}
 
-      <div className="fixed bottom-4 right-4 z-50 grid-cols-2 text-sm">
-        <Button
-          className="z-50 opacity-60 hover:opacity-100 hover:text-xl transition-all"
-          variant="ghost"
-          onClick={() =>
-            setColorMode((colorMode) =>
-              colorMode === "purple"
-                ? "green"
-                : colorMode === "green"
-                ? "blue"
-                : colorMode === "blue"
-                ? "red"
-                : colorMode === "red"
-                ? "orange"
-                : "purple"
-            )
-          }
-        >
-          colour
-        </Button>
-        <Button
-          className="z-50 opacity-60 hover:opacity-100 hover:text-xl transition-all"
-          variant="ghost"
-          onClick={() => setZenMode(!zenMode)}
-        >
-          {zenMode ? "leave zen" : "zen"}
-        </Button>
-      </div>
+      {renderControls()}
     </div>
   );
 };
 
-export default page;
+export default FocusTrackerPage;

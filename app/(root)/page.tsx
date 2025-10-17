@@ -27,6 +27,7 @@ export default function Home() {
   if (exists && user) return <LandingWithUser />;
   if (!exists && user) return <CreateUserCard />;
 
+
   // Fallback to no user landing page
   return <LandingNoUser />;
 }
