@@ -6,7 +6,7 @@ const LandingNoUser = () => {
   return (
     <div>
       <div className="text-center w-full mb-16">
-        <h1 className="font-[800] mb-10 pb-4 text-4xl inline-block text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 dark:from-primary dark:via-blue-400 dark:to-primary">
+        <h1 className="font-[800] mb-10 pb-4 text-4xl inline-block text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 dark:from-primary dark:via-green-200 dark:to-primary">
           Welcome to Work Study Sim
         </h1>
         <p className="text-lg mb-4">
@@ -30,19 +30,19 @@ const LandingNoUser = () => {
       </div>
 
       <div className="flex items-center gap-4 w-full h-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
           <ExampleCard
             card_title="Focus Tracker"
             description_1="Total Focus Time: 716.12 Hours"
             description_2="Track your focus and productivity levels throughout the day, week, month, and year."
-            href="/example-focus-tracker"
+            image="/focus-stats.png"
           />
 
           <ExampleCard
             card_title="Finance Tracker"
             description_1="Total Income: £58,305.12"
             description_2={`Fiscally quantify your productivity levels by equating your focus time to your dream job roles salary.`}
-            href="/example-finance-tracker"
+            image="/focus-career.png"
           />
         </div>
       </div>

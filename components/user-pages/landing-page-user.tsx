@@ -9,17 +9,23 @@ const LandingWithUser = () => {
 
   return (
     <div>
-      <div className="text-center w-full mb-16">
-        <h1 className="font-[800] text-4xl inline-block text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 dark:from-primary dark:via-blue-400 dark:to-primary">
+      <div className="text-center w-full mb-16 -mt-16">
+        <h1 className="font-[800] text-4xl inline-block text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 dark:from-primary dark:via-green-400 dark:to-primary">
           Welcome back, {appUser?.username}!
         </h1>
       </div>
 
       <div className="flex items-center gap-4 w-full h-full">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-          <FocusCard />
-          <StatisticsCard />
-          <CareerCard />
+          <div className="order-2 md:order-1">
+            <FocusCard />
+          </div>
+          <div className="order-1 md:order-2">
+            <StatisticsCard />
+          </div>
+          <div className="order-3">
+            <CareerCard />
+          </div>
         </div>
       </div>
     </div>

@@ -11,8 +11,8 @@ const libreFranklin = Libre_Franklin({
 });
 
 export const metadata: Metadata = {
-  title: "work-study-sim",
-  description: "Quantify your study sessions in terms of your future income.",
+  title: "ownMi",
+  description: "Simulate your work-study journey. Plan, learn, and grow with our tools.",
 };
 
 export default function RootLayout({

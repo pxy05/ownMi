@@ -75,6 +75,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import FocusHeatChart from "@/components/ui/focus-heatchart";
+import { formatDuration as formatDurationUtil } from "@/lib/utils";
 
 interface FocusSession {
   id: string;
@@ -107,6 +108,9 @@ const FocusSessionsPage = () => {
     editFocusSession,
     deleteFocusSession,
     appUser,
+    averageFocusTimePerDay,
+    averageFocusTimePerWeek,
+    averageFocusTimePerMonth,
   } = useAppUser();
 
   // State management
@@ -738,9 +742,7 @@ const FocusSessionsPage = () => {
             <CardContent className="flex gap-8">
               <div className="flex flex-col md:flex-row gap-4">
                 <ChartAreaGradient
-                  userId={String(appUser?.id)}
                   mini={false}
-                  reset={0}
                 />
                 <FocusHeatChart />
               </div>
@@ -864,6 +866,38 @@ const FocusSessionsPage = () => {
                     </div>
                     <div className="text-xs text-muted-foreground">
                       Avg Duration
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h4 className="font-medium">Average Focus Time</h4>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="p-3 bg-primary/10 rounded-lg text-center">
+                      <div className="text-xl font-bold text-primary">
+                        {formatDurationUtil(averageFocusTimePerDay, 'short')}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        Per Day
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-primary/10 rounded-lg text-center">
+                      <div className="text-xl font-bold text-primary">
+                        {formatDurationUtil(averageFocusTimePerWeek, 'short')}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        Per Week
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-primary/10 rounded-lg text-center">
+                      <div className="text-xl font-bold text-primary">
+                        {formatDurationUtil(averageFocusTimePerMonth, 'short')}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        Per Month
+                      </div>
                     </div>
                   </div>
                 </div>

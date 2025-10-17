@@ -150,9 +150,11 @@ const FocusChart = ({
   return (
     <div className="flex-1">
       <div className="overflow-x-auto">
-        <div className="flex gap-2 whitespace-nowrap pb-2">
-          {(["today", "lastWeek", "lastMonth", "lastYear"] as TimeRange[]).map(
-            (range) => (
+        {!span && (
+          <div className="flex gap-2 whitespace-nowrap pb-2">
+            {(
+              ["today", "lastWeek", "lastMonth", "lastYear"] as TimeRange[]
+            ).map((range) => (
               <button
                 key={range}
                 onClick={() => setTimeRange(range)}
@@ -170,17 +172,17 @@ const FocusChart = ({
                   ? "Last Month"
                   : "Last Year"}
               </button>
-            )
-          )}
+            ))}
 
-          {/* Refresh button also inside scroll */}
-          <button
-            onClick={refreshFocusSessions}
-            className={`px-4 py-1 rounded-lg transition-colors font-medium text-sm ${bgColor} text-gray-700 hover:bg-gray-200`}
-          >
-            Refresh
-          </button>
-        </div>
+            {/* Refresh button also inside scroll */}
+            <button
+              onClick={refreshFocusSessions}
+              className={`px-4 py-1 rounded-lg transition-colors font-medium text-sm ${bgColor} text-gray-700 hover:bg-gray-200`}
+            >
+              Refresh
+            </button>
+          </div>
+        )}
       </div>
 
       {!currentData || currentData.length === 0 ? (

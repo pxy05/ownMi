@@ -12,7 +12,7 @@ import Link from "next/link";
 const CareerCard = () => {
   return (
     <Link href="/career" className="">
-      <Card className="bg-card/60 backdrop-blur-3xl">
+      <Card className="bg-card/60 backdrop-blur-3xl h-full hover:scale-105 transition-all duration-200 hover:bg-primary-foreground/80 dark:hover:bg-black/20">
         <CardHeader>
           <CardTitle>Career</CardTitle>
         </CardHeader>

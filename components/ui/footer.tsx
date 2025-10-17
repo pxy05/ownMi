@@ -10,7 +10,7 @@ export default function Footer() {
         {/* Logo and Description */}
         <div className="flex flex-col items-center md:items-start gap-4">
           <Link href="/" className="text-2xl font-bold tracking-tight">
-            work-study-sim
+            ownMi
           </Link>
           <p className="text-muted-foreground text-center md:text-left max-w-xs">
             Simulate your work-study journey. Plan, learn, and grow with our
@@ -22,7 +22,7 @@ export default function Footer() {
               className="hover:text-primary pl-2 pr-2 w-full"
               size="icon"
               onClick={() =>
-                window.open("https://github.com/pxy05/work-study-sim", "_blank")
+                window.open("https://github.com/pxy05/ownMi", "_blank")
               }
             >
               <Image
@@ -70,7 +70,7 @@ export default function Footer() {
           </Link>
         </nav>
         <p className="text-xs text-muted-foreground text-center md:text-right">
-          &copy; 2025 work-study-sim. All rights reserved.
+          &copy; 2025 ownMi. All rights reserved.
         </p>
       </div>
     </footer>

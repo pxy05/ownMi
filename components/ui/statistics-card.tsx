@@ -28,15 +28,15 @@ const FinanceCard = () => {
 
   return (
     <Link href="/stats" className="">
-      <Card className="bg-card/60 backdrop-blur-3xl">
+      <Card className="bg-card/60 backdrop-blur-3xl h-full hover:scale-105 transition-all duration-200 hover:bg-primary-foreground/80 dark:hover:bg-black/20">
         <CardHeader>
           <CardTitle>Statistics</CardTitle>
         </CardHeader>
         <CardContent>
           <CardDescription>View your statistics and insights.</CardDescription>
-          <FocusHeatChart />
+          <FocusHeatChart margin={2} blockSize={7.9} />
           <div className="mt-4" />
-          <FocusChart mini={isMobile} span="lastWeek" />
+          <FocusChart mini={isMobile} span="lastMonth" />
         </CardContent>
       </Card>
     </Link>
