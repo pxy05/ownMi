@@ -1,15 +1,8 @@
-
-![Logo](https://www.tastingtable.com/img/gallery/how-to-make-clear-ice-cubes-cocktail-upgrade/let-us-be-crystal-clear-1679564701.jpg)
-
-
 # OwnMi
 
 **OwnMi** allows you to take **own**ership of your future.
 
 At it's core it is a focus tracking app providing long term analytics and visualisations of your performance not just in your study but anything quantifiable.
-
-[Have a look at the technical details.](https://prajyakha.com/technical-breakdown)
-
 
 ## Features
 **Track things such as:**
@@ -18,10 +11,16 @@ At it's core it is a focus tracking app providing long term analytics and visual
 - Events completed
 - Progress towards goals
 
+![Logo](https://raw.githubusercontent.com/pxy05/ownMi/refs/heads/main/public/focus-career.png)
+
+
+
 **Visualisations include:**
 
 - Heatmaps for consistency
 - Bar Charts and Line Graphs for long term analysis
+
+![Logo](https://raw.githubusercontent.com/pxy05/ownMi/refs/heads/main/public/focus-stats.png)
 
 With it's AI Agent it doesn't sugarcoat things but rather nudges you towards the right track and if need be suggests alterations to your goals.
 
