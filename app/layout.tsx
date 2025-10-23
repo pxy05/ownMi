@@ -25,7 +25,7 @@ export default function RootLayout({
       <body className={`${libreFranklin.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >

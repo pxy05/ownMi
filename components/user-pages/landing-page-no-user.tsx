@@ -14,19 +14,19 @@ const LandingNoUser = () => {
           Get started by{" "}
           <Link
             href="/auth/signup"
-            className="hover:underline text-blue-600 dark:text-blue-400"
+            className="hover:underline text-blue-600 dark:text-blue-400 hover:font-bold transition-all duration-200"
           >
             creating an account
           </Link>{" "}
           or{" "}
           <Link
             href="/auth/login"
-            className="hover:underline text-blue-600 dark:text-blue-400"
+            className="hover:underline text-blue-600 dark:text-blue-400 hover:font-bold transition-all duration-200"
           >
-            logging in
+            logging in.
           </Link>
         </p>
-        <h2 className="font-bold text-2xl mt-8 text-primary">Example Usage</h2>
+        <h2 className="font-bold text-3xl mt-8 text-primary">Features</h2>
       </div>
 
       <div className="flex items-center gap-4 w-full h-full">
@@ -39,9 +39,9 @@ const LandingNoUser = () => {
           />
 
           <ExampleCard
-            card_title="Finance Tracker"
-            description_1="Total Income: £58,305.12"
-            description_2={`Fiscally quantify your productivity levels by equating your focus time to your dream job roles salary.`}
+            card_title="Career Statistics Tracking"
+            description_1="Goal based statistics tracking."
+            description_2="Track your progress and stay focused. Keep consistent by checking your stats."
             image="/focus-career.png"
           />
         </div>
